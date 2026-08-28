@@ -13,3 +13,176 @@
   <script type="module" src="js/app.js"></script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restaurante - Menú</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f8f8f8;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    h1 {
+      color: #333;
+    }
+    #hero-video {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto 40px;
+      display: block;
+      border-radius: 8px;
+    }
+    h2 {
+      text-align: center;
+      color: #444;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🍽️ Restaurant_Sabor_Gourmet - Nuestro Menú</h1>
+  </header>
+
+  <!-- Video promocional del restaurante -->
+  <video id="hero-video" controls autoplay muted loop>
+    <source src="assets/Video/VIDEO.mp4" type="video/mp4">
+    Tu navegador no soporta la etiqueta de video.
+  </video>
+
+  <!-- Categorías -->
+  <h2>Categorías</h2>
+  <div id="categories"></div>
+
+  <!-- Platos -->
+  <h2>Nuestros Platos</h2>
+  <div id="dishes"></div>
+
+  <!-- Enlazamos tu archivo JS -->
+  <script src="js/Views/MenuView.js"></script>
+  <script>
+    // Lista de platos con las imágenes
+    const platosEjemplo = [
+      {
+        id: 'p-1',
+        name: 'Mofongo de Mariscos',
+        category: 'Platos Fuertes',
+        price: 850.00,
+        description: 'Mofongo con camarones y salsa de mariscos.',
+        ingredients: ['Plátano verde', 'Ajo', 'Chicharrón', 'Camarones', 'Mantequilla'],
+        image: 'assets/imagene/MOFONGO 1.jpg',
+      },
+      {
+        id: 'p-2',
+        name: 'Mofongo Tradicional',
+        category: 'Platos Fuertes',
+        price: 750.00,
+        description: 'Mofongo con chicharrón de cerdo.',
+        ingredients: ['Plátano verde', 'Ajo', 'Chicharrón de cerdo', 'Mantequilla'],
+        image: 'assets/imagene/MOFONGO 2.jpg',
+        
+      },
+      {
+        id: 'p-3',
+        name: 'Ensalada Tropical',
+        category: 'Entradas',
+        price: 320.00,
+        description: 'Lechuga, frutas frescas y cebolla.',
+        ingredients: ['Lechuga', 'Piña', 'Mango', 'Aderezo especial'],
+        image: 'assets/imagene/ENSALADA 1.jpg',
+        
+      },
+      {
+        id: 'p-4',
+        name: 'Ensalada Fresca',
+        category: 'Entradas',
+        price: 280.00,
+        description: 'Vegetales frescos con aderezo ligero.',
+        ingredients: ['Lechuga', 'Tomate', 'Pepino', 'Cebolla', 'Aderezo'],
+        image: 'assets/imagene/ENSALADA 2.jpg',
+       
+      },
+      {
+    id: 'p-5',
+    name: 'Pescado Frito con Tostones',
+    category: 'Platos Fuertes',
+    price: 780.00,
+    description: 'Pescado fresco frito con tostones y ensalada de acompañamiento.',
+    ingredients: ['Pescado', 'Sal', 'Limón', 'Plátano verde', 'Aceite'],
+    image: 'assets/imagene/PESCADO.jpg',
+   
+  },
+  {
+    id: 'p-6',
+    name: 'Sopa de Mariscos',
+    category: 'Entradas',
+    price: 420.00,
+    description: 'Sopa caliente con camarones, calamares y pescado fresco.',
+    ingredients: ['Camarones', 'Calamares', 'Pescado', 'Caldo de pescado', 'Vegetales'],
+    image: 'assets/imagene/SOPA.jpg',
+  
+  },
+  {
+    id: 'p-7',
+    name: 'Chicharrón de Pollo con Tostones',
+    category: 'Platos Fuertes',
+    price: 680.00,
+    description: 'Pollo crujiente frito con tostones.',
+    ingredients: ['Pollo', 'Harina', 'Especias', 'Plátano verde', 'Guacamole'],
+    image: 'assets/imagene/POLLO FRITO.jpg',
+    
+  },
+  {
+    id: 'p-8',
+    name: 'Tostones con Queso',
+    category: 'Entradas',
+    price: 250.00,
+    description: 'Tostones recién hechos con queso derretido y mantequilla.',
+    ingredients: ['Plátano verde', 'Queso', 'Mantequilla', 'Sal'],
+    image: 'assets/imagene/TOSTONES CON QUESO FRITO.jpg',
+    
+  }
+      ];
+
+    // Inicializamos la vista
+    const vista = new MenuView();
+    vista.init();
+
+    // Extraemos categorías únicas
+    const categorias = [...new Set(platosEjemplo.map(p => p.category))];
+    
+    // Variable para categoría activa
+    let categoriaActiva = categorias[0];
+
+    // Función para cambiar de categoría
+    function cambiarCategoria(cat) {
+      categoriaActiva = cat;
+      vista.renderCategories(categorias, categoriaActiva, cambiarCategoria);
+      const filtrados = platosEjemplo.filter(p => p.category === cat);
+      vista.renderDishes(filtrados, agregarAlCarrito, verDetalles);
+    }
+
+    // Funciones de acción
+    function agregarAlCarrito(plato) {
+      alert('Agregado: ' + plato.name);
+    }
+
+    function verDetalles(plato) {
+      vista.renderDishDetailModal(plato);
+    }
+
+    // Carga inicial
+    cambiarCategoria(categoriaActiva);
+  </script>
+
+</body>
+</html>
