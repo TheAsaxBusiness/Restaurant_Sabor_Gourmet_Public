@@ -1,0 +1,22 @@
+{
+  "name": "restaurant-sabor-gourmet",
+  "version": "1.0.0",
+  "description": "Aplicación Web interactiva para Restaurante Sabor Gourmet - HTML5, CSS3, ES6+ & Express JSON API",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "restaurant",
+    "express",
+    "javascript",
+    "html5",
+    "css3"
+  ],
+  "author": "Equipo Sabor Gourmet (Franyel, Carlos, Altagracia, Enmanuel)",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
