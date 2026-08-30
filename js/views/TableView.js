@@ -1,5 +1,12 @@
-export class TableView {
+
+ export class TableView {
   constructor() {
+    this.scheduleContainer = null;
+    this.combosContainer = null;
+    this.nutritionContainer = null;
+  }
+
+  init() {
     this.scheduleContainer = document.getElementById("schedule-table");
     this.combosContainer = document.getElementById("combos-table");
     this.nutritionContainer = document.getElementById("nutrition-table");
