@@ -35,4 +35,48 @@ export default class DashboardModel {
       return [];
     }
   }
+
+  // [CRUD CLIENTES] Agregar cliente CRM
+  async addCustomer(customerData) {
+    try {
+      const res = await fetch('/api/customers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(customerData)
+      });
+      const data = await res.json();
+      if (data.success) await this.loadCustomers();
+      return data;
+    } catch (e) {
+      return { success: false, error: 'Error al conectar con la API.' };
+    }
+  }
+
+  // [CRUD CLIENTES] Editar cliente CRM
+  async updateCustomer(id, customerData) {
+    try {
+      const res = await fetch(`/api/customers/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(customerData)
+      });
+      const data = await res.json();
+      if (data.success) await this.loadCustomers();
+      return data;
+    } catch (e) {
+      return { success: false, error: 'Error al conectar con la API.' };
+    }
+  }
+
+  // [CRUD CLIENTES] Eliminar cliente CRM
+  async deleteCustomer(id) {
+    try {
+      const res = await fetch(`/api/customers/${id}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (data.success) await this.loadCustomers();
+      return data;
+    } catch (e) {
+      return { success: false, error: 'Error al conectar con la API.' };
+    }
+  }
 }

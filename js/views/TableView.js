@@ -1,5 +1,5 @@
 // ==========================================
-// TABLEVIEW.JS - VISTA DE TABLAS E INFORMACIÓN
+// TABLEVIEW.JS - VISTA DE TABLAS E INFORMACIÓN (CON CRUD ACCIONES)
 // Altagracia - Dev 2 / Equipo Sabor Gourmet
 // ==========================================
 
@@ -19,24 +19,39 @@ export default class TableView {
   }
 
   // Renderizar la tabla semántica <table> de Horarios
-  renderScheduleTable(scheduleData) {
+  renderScheduleTable(scheduleData, isAdmin = false) {
     if (!this.scheduleContainer || !scheduleData) return;
 
-    const rows = scheduleData.map(item => `
+    const rows = scheduleData.map((item, index) => `
       <tr>
         <td><strong>${item.day || item.dia || ''}</strong></td>
         <td>${item.hours || item.horario || ''}</td>
         <td><span style="color: var(--status-available); font-weight: 600;"><i class="fa-solid fa-circle" style="font-size: 0.7rem; margin-right: 0.3rem;"></i> ${item.status || 'Abierto'}</span></td>
+        ${isAdmin ? `
+          <td style="text-align: center;">
+            <button class="btn-outline edit-schedule-btn" data-index="${index}" style="padding: 0.25rem 0.6rem; font-size: 0.8rem; margin-right: 0.3rem;"><i class="fa-solid fa-pen"></i></button>
+            <button class="btn-outline delete-schedule-btn" data-index="${index}" style="padding: 0.25rem 0.6rem; font-size: 0.8rem; color: #ff6b6b; border-color: #ff6b6b;"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        ` : ''}
       </tr>
     `).join('');
 
+    const adminHeader = isAdmin ? `
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3 style="color: var(--color-primary); margin: 0;"><i class="fa-solid fa-clock"></i> Horarios de Atención</h3>
+        <button id="open-add-schedule-modal" class="btn-primary" style="padding: 0.4rem 0.85rem; font-size: 0.85rem;"><i class="fa-solid fa-plus"></i> Agregar Horario</button>
+      </div>
+    ` : '';
+
     this.scheduleContainer.innerHTML = `
+      ${adminHeader}
       <table class="styled-table">
         <thead>
           <tr>
             <th>Días de Servicio</th>
             <th>Horario de Atención</th>
             <th>Estado</th>
+            ${isAdmin ? '<th>Acciones</th>' : ''}
           </tr>
         </thead>
         <tbody>
@@ -47,19 +62,33 @@ export default class TableView {
   }
 
   // Renderizar la tabla <table> de Combos Promocionales
-  renderCombosTable(combosData) {
+  renderCombosTable(combosData, isAdmin = false) {
     if (!this.combosContainer || !combosData) return;
 
-    const rows = combosData.map(item => `
+    const rows = combosData.map((item, index) => `
       <tr>
         <td><strong style="color: var(--color-primary);">${item.name || item.combo || ''}</strong></td>
         <td>${item.description || item.includes || item.incluye || ''}</td>
         <td><strong style="color: var(--color-secondary);">RD$ ${Number(item.price || item.precioOferta || item.offerPrice || 0).toFixed(2)}</strong></td>
         <td><span style="background: rgba(46, 204, 113, 0.15); color: var(--status-available); padding: 0.25rem 0.6rem; border-radius: 12px; font-weight: 600;"><i class="fa-solid fa-tag"></i> ${item.savings || 'Ahorro Especial'}</span></td>
+        ${isAdmin ? `
+          <td style="text-align: center;">
+            <button class="btn-outline edit-combo-btn" data-index="${index}" style="padding: 0.25rem 0.6rem; font-size: 0.8rem; margin-right: 0.3rem;"><i class="fa-solid fa-pen"></i></button>
+            <button class="btn-outline delete-combo-btn" data-index="${index}" style="padding: 0.25rem 0.6rem; font-size: 0.8rem; color: #ff6b6b; border-color: #ff6b6b;"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        ` : ''}
       </tr>
     `).join('');
 
+    const adminHeader = isAdmin ? `
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3 style="color: var(--color-primary); margin: 0;"><i class="fa-solid fa-gift"></i> Combos Promocionales</h3>
+        <button id="open-add-combo-modal" class="btn-primary" style="padding: 0.4rem 0.85rem; font-size: 0.85rem;"><i class="fa-solid fa-plus"></i> Agregar Combo</button>
+      </div>
+    ` : '';
+
     this.combosContainer.innerHTML = `
+      ${adminHeader}
       <table class="styled-table">
         <thead>
           <tr>
@@ -67,6 +96,7 @@ export default class TableView {
             <th>Contenido & Incluye</th>
             <th>Precio Especial</th>
             <th>Ahorro Estimado</th>
+            ${isAdmin ? '<th>Acciones</th>' : ''}
           </tr>
         </thead>
         <tbody>
@@ -77,20 +107,34 @@ export default class TableView {
   }
 
   // Renderizar la tabla <table> Nutricional
-  renderNutritionTable(nutritionData) {
+  renderNutritionTable(nutritionData, isAdmin = false) {
     if (!this.nutritionContainer || !nutritionData) return;
 
-    const rows = nutritionData.map(item => `
+    const rows = nutritionData.map((item, index) => `
       <tr>
         <td><strong>${item.dish || item.dishName || item.name || item.plato || ''}</strong></td>
         <td>${item.calories || item.calorias || ''}</td>
         <td>${item.protein || item.proteinas || ''}</td>
         <td>${item.carbs || item.carbohidratos || ''}</td>
         <td>${item.fat || item.grasas || ''}</td>
+        ${isAdmin ? `
+          <td style="text-align: center;">
+            <button class="btn-outline edit-nutrition-btn" data-index="${index}" style="padding: 0.25rem 0.6rem; font-size: 0.8rem; margin-right: 0.3rem;"><i class="fa-solid fa-pen"></i></button>
+            <button class="btn-outline delete-nutrition-btn" data-index="${index}" style="padding: 0.25rem 0.6rem; font-size: 0.8rem; color: #ff6b6b; border-color: #ff6b6b;"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        ` : ''}
       </tr>
     `).join('');
 
+    const adminHeader = isAdmin ? `
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3 style="color: var(--color-primary); margin: 0;"><i class="fa-solid fa-heart-pulse"></i> Información Nutricional</h3>
+        <button id="open-add-nutrition-modal" class="btn-primary" style="padding: 0.4rem 0.85rem; font-size: 0.85rem;"><i class="fa-solid fa-plus"></i> Agregar Registro Nutricional</button>
+      </div>
+    ` : '';
+
     this.nutritionContainer.innerHTML = `
+      ${adminHeader}
       <table class="styled-table">
         <thead>
           <tr>
@@ -99,6 +143,7 @@ export default class TableView {
             <th>Proteínas</th>
             <th>Carbohidratos</th>
             <th>Grasas Totales</th>
+            ${isAdmin ? '<th>Acciones</th>' : ''}
           </tr>
         </thead>
         <tbody>

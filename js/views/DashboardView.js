@@ -402,11 +402,18 @@ export default class DashboardView {
         <td><span style="font-weight: 700; color: var(--text-main);">${c.visits} visitas</span></td>
         <td><span style="background: rgba(230, 92, 0, 0.15); color: var(--color-secondary); padding: 0.25rem 0.6rem; border-radius: 12px; font-weight: 700;"><i class="fa-solid fa-star"></i> ${c.points} pts</span></td>
         <td>${c.favoriteDish || 'Mofongo de Mariscos'}</td>
+        <td style="text-align: center;">
+          <button class="btn-outline edit-customer-btn" data-id="${c.id}" style="padding: 0.25rem 0.6rem; font-size: 0.8rem; margin-right: 0.3rem;" title="Editar cliente"><i class="fa-solid fa-user-pen"></i></button>
+          <button class="btn-outline delete-customer-btn" data-id="${c.id}" style="padding: 0.25rem 0.6rem; font-size: 0.8rem; color: #ff6b6b; border-color: #ff6b6b;" title="Eliminar cliente"><i class="fa-solid fa-user-minus"></i></button>
+        </td>
       </tr>
     `).join('');
 
     this.crmContainer.innerHTML = `
-      <h3 style="color: var(--text-main); margin-bottom: 1rem; font-size: 1.3rem;"><i class="fa-solid fa-users-gear" style="color: var(--color-primary);"></i> Módulo de Clientes (CRM & Fidelidad)</h3>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3 style="color: var(--text-main); margin: 0; font-size: 1.3rem;"><i class="fa-solid fa-users-gear" style="color: var(--color-primary);"></i> Módulo de Clientes (CRM & Fidelidad)</h3>
+        <button id="open-add-customer-modal" class="btn-primary" style="padding: 0.4rem 0.85rem; font-size: 0.85rem;"><i class="fa-solid fa-user-plus"></i> Registrar Cliente</button>
+      </div>
       <div class="table-container">
         <table class="styled-table">
           <thead>
@@ -417,6 +424,7 @@ export default class DashboardView {
               <th>Frecuencia</th>
               <th>Puntos Fidelidad</th>
               <th>Plato Favorito</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>

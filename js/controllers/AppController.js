@@ -178,7 +178,7 @@ export default class AppController {
 
   // Configurar modales interactivos CRUD (Platos & Mesas)
   setupCRUDModalsListeners() {
-    // Modal CRUD Menú
+    // Modal CRUD Menú (Platos)
     const dishModal = document.getElementById('dish-crud-modal');
     const closeDishModal = document.getElementById('close-dish-crud-modal');
     const dishForm = document.getElementById('dish-crud-form');
@@ -191,13 +191,19 @@ export default class AppController {
       dishForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const dishId = document.getElementById('crud-dish-id').value;
-        const dishData = {
-          name: document.getElementById('crud-dish-name').value,
-          category: document.getElementById('crud-dish-category').value,
-          price: Number(document.getElementById('crud-dish-price').value),
-          prepTime: document.getElementById('crud-dish-time').value,
-          description: document.getElementById('crud-dish-desc').value
-        };
+        const name = document.getElementById('crud-dish-name').value.trim();
+        const category = document.getElementById('crud-dish-category').value.trim();
+        const priceNum = Number(document.getElementById('crud-dish-price').value);
+        const prepTime = document.getElementById('crud-dish-time').value.trim();
+        const description = document.getElementById('crud-dish-desc').value.trim();
+
+        if (!name) return this.cartView.showToast('El nombre del plato es obligatorio.', 'error');
+        if (!category) return this.cartView.showToast('Seleccione una categoría.', 'error');
+        if (isNaN(priceNum) || priceNum <= 0) return this.cartView.showToast('Ingrese un precio válido mayor a 0.', 'error');
+        if (!prepTime) return this.cartView.showToast('El tiempo de preparación es obligatorio.', 'error');
+        if (!description) return this.cartView.showToast('La descripción del plato es obligatoria.', 'error');
+
+        const dishData = { name, category, price: priceNum, prepTime, description };
 
         let result;
         if (dishId) {
@@ -230,12 +236,19 @@ export default class AppController {
     if (tableForm) {
       tableForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const tableData = {
-          number: Number(document.getElementById('crud-table-number').value),
-          zone: document.getElementById('crud-table-zone').value,
-          capacity: Number(document.getElementById('crud-table-capacity').value),
-          status: 'Disponible'
-        };
+        const num = Number(document.getElementById('crud-table-number').value);
+        const zone = document.getElementById('crud-table-zone').value;
+        const cap = Number(document.getElementById('crud-table-capacity').value);
+
+        if (isNaN(num) || num <= 0) return this.cartView.showToast('El número de mesa debe ser un entero positivo.', 'error');
+        if (isNaN(cap) || cap < 1 || cap > 20) return this.cartView.showToast('La capacidad de la mesa debe ser entre 1 y 20 personas.', 'error');
+
+        const existingTables = this.tableModel.getAllTables();
+        if (existingTables.some(t => Number(t.number) === num)) {
+          return this.cartView.showToast(`La Mesa #${num} ya existe en el salón.`, 'error');
+        }
+
+        const tableData = { number: num, zone, capacity: cap, status: 'Disponible' };
 
         const result = await this.tableModel.addTable(tableData);
         if (result.success) {
@@ -245,6 +258,171 @@ export default class AppController {
           this.refreshAdminAndCustomerOrders();
         } else {
           this.cartView.showToast(result.error || 'Error al guardar mesa.', 'error');
+        }
+      });
+    }
+
+    // Modal CRUD Horarios
+    const scheduleModal = document.getElementById('schedule-crud-modal');
+    const closeScheduleModal = document.getElementById('close-schedule-crud-modal');
+    const scheduleForm = document.getElementById('schedule-crud-form');
+
+    if (closeScheduleModal && scheduleModal) {
+      closeScheduleModal.addEventListener('click', () => scheduleModal.classList.remove('active'));
+    }
+
+    if (scheduleForm) {
+      scheduleForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const index = document.getElementById('crud-schedule-index').value;
+        const day = document.getElementById('crud-schedule-day').value.trim();
+        const hours = document.getElementById('crud-schedule-hours').value.trim();
+        const status = document.getElementById('crud-schedule-status').value;
+
+        if (!day) return this.cartView.showToast('Ingrese los días de servicio.', 'error');
+        if (!hours) return this.cartView.showToast('Ingrese el horario de atención.', 'error');
+
+        const scheduleData = { day, hours, status };
+        let result;
+        if (index !== '') {
+          result = await this.menuModel.updateSchedule(index, scheduleData);
+        } else {
+          result = await this.menuModel.addSchedule(scheduleData);
+        }
+
+        if (result.success) {
+          this.cartView.showToast(result.message, 'success');
+          scheduleModal.classList.remove('active');
+          scheduleForm.reset();
+          this.refreshAdminAndCustomerOrders();
+        } else {
+          this.cartView.showToast(result.error || 'Error al guardar horario.', 'error');
+        }
+      });
+    }
+
+    // Modal CRUD Combos
+    const comboModal = document.getElementById('combo-crud-modal');
+    const closeComboModal = document.getElementById('close-combo-crud-modal');
+    const comboForm = document.getElementById('combo-crud-form');
+
+    if (closeComboModal && comboModal) {
+      closeComboModal.addEventListener('click', () => comboModal.classList.remove('active'));
+    }
+
+    if (comboForm) {
+      comboForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const index = document.getElementById('crud-combo-index').value;
+        const name = document.getElementById('crud-combo-name').value.trim();
+        const description = document.getElementById('crud-combo-desc').value.trim();
+        const price = Number(document.getElementById('crud-combo-price').value);
+        const savings = document.getElementById('crud-combo-savings').value.trim();
+
+        if (!name) return this.cartView.showToast('El nombre del combo es obligatorio.', 'error');
+        if (!description) return this.cartView.showToast('El contenido del combo es obligatorio.', 'error');
+        if (isNaN(price) || price <= 0) return this.cartView.showToast('Ingrese un precio positivo.', 'error');
+        if (!savings) return this.cartView.showToast('Ingrese el ahorro estimado.', 'error');
+
+        const comboData = { name, description, price, savings };
+        let result;
+        if (index !== '') {
+          result = await this.menuModel.updateCombo(index, comboData);
+        } else {
+          result = await this.menuModel.addCombo(comboData);
+        }
+
+        if (result.success) {
+          this.cartView.showToast(result.message, 'success');
+          comboModal.classList.remove('active');
+          comboForm.reset();
+          this.refreshAdminAndCustomerOrders();
+        } else {
+          this.cartView.showToast(result.error || 'Error al guardar combo.', 'error');
+        }
+      });
+    }
+
+    // Modal CRUD Nutrición
+    const nutrModal = document.getElementById('nutrition-crud-modal');
+    const closeNutrModal = document.getElementById('close-nutrition-crud-modal');
+    const nutrForm = document.getElementById('nutrition-crud-form');
+
+    if (closeNutrModal && nutrModal) {
+      closeNutrModal.addEventListener('click', () => nutrModal.classList.remove('active'));
+    }
+
+    if (nutrForm) {
+      nutrForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const index = document.getElementById('crud-nutrition-index').value;
+        const dish = document.getElementById('crud-nutrition-dish').value.trim();
+        const calories = document.getElementById('crud-nutrition-calories').value.trim();
+        const protein = document.getElementById('crud-nutrition-protein').value.trim();
+        const carbs = document.getElementById('crud-nutrition-carbs').value.trim();
+        const fat = document.getElementById('crud-nutrition-fat').value.trim();
+
+        if (!dish) return this.cartView.showToast('El nombre del plato es obligatorio.', 'error');
+        if (!calories) return this.cartView.showToast('Las calorías son obligatorias.', 'error');
+
+        const nutrData = { dish, calories, protein, carbs, fat };
+        let result;
+        if (index !== '') {
+          result = await this.menuModel.updateNutrition(index, nutrData);
+        } else {
+          result = await this.menuModel.addNutrition(nutrData);
+        }
+
+        if (result.success) {
+          this.cartView.showToast(result.message, 'success');
+          nutrModal.classList.remove('active');
+          nutrForm.reset();
+          this.refreshAdminAndCustomerOrders();
+        } else {
+          this.cartView.showToast(result.error || 'Error al guardar nutrición.', 'error');
+        }
+      });
+    }
+
+    // Modal CRUD Clientes CRM
+    const customerModal = document.getElementById('customer-crud-modal');
+    const closeCustomerModal = document.getElementById('close-customer-crud-modal');
+    const customerForm = document.getElementById('customer-crud-form');
+
+    if (closeCustomerModal && customerModal) {
+      closeCustomerModal.addEventListener('click', () => customerModal.classList.remove('active'));
+    }
+
+    if (customerForm) {
+      customerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('crud-customer-id').value;
+        const name = document.getElementById('crud-customer-name').value.trim();
+        const email = document.getElementById('crud-customer-email').value.trim().toLowerCase();
+        const phone = document.getElementById('crud-customer-phone').value.trim();
+        const points = Number(document.getElementById('crud-customer-points').value);
+
+        if (!name) return this.cartView.showToast('El nombre del cliente es obligatorio.', 'error');
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email || !emailRegex.test(email)) return this.cartView.showToast('Ingrese un correo electrónico válido.', 'error');
+        if (!phone) return this.cartView.showToast('El teléfono es obligatorio.', 'error');
+        if (isNaN(points) || points < 0) return this.cartView.showToast('Los puntos de fidelidad deben ser un número no negativo.', 'error');
+
+        const customerData = { name, email, phone, points };
+        let result;
+        if (id) {
+          result = await this.dashboardModel.updateCustomer(id, customerData);
+        } else {
+          result = await this.dashboardModel.addCustomer(customerData);
+        }
+
+        if (result.success) {
+          this.cartView.showToast(result.message, 'success');
+          customerModal.classList.remove('active');
+          customerForm.reset();
+          this.refreshAdminAndCustomerOrders();
+        } else {
+          this.cartView.showToast(result.error || 'Error al guardar cliente.', 'error');
         }
       });
     }
@@ -434,9 +612,181 @@ export default class AppController {
       // 5. CRM Clientes
       const customers = await this.dashboardModel.loadCustomers();
       this.dashboardView.renderCRM(customers);
+
+      this.bindTableCRUDListeners();
     } else {
       this.renderCustomerOrders(orders);
     }
+
+    // Renderizar tablas semánticas según rol
+    const tableData = this.menuModel.getTableData();
+    const isAdmin = user ? user.role === 'admin' : false;
+    this.tableView.renderScheduleTable(tableData.schedule, isAdmin);
+    this.tableView.renderCombosTable(tableData.combos, isAdmin);
+    this.tableView.renderNutritionTable(tableData.nutrition, isAdmin);
+    this.bindTableCRUDListeners();
+  }
+
+  bindTableCRUDListeners() {
+    // Horarios
+    const addSchedBtn = document.getElementById('open-add-schedule-modal');
+    if (addSchedBtn) {
+      addSchedBtn.onclick = () => {
+        document.getElementById('schedule-crud-form').reset();
+        document.getElementById('crud-schedule-index').value = '';
+        document.getElementById('schedule-crud-modal-title').innerHTML = '<i class="fa-solid fa-clock"></i> Agregar Nuevo Horario';
+        document.getElementById('schedule-crud-modal').classList.add('active');
+      };
+    }
+
+    document.querySelectorAll('.edit-schedule-btn').forEach(btn => {
+      btn.onclick = () => {
+        const index = btn.dataset.index;
+        const data = this.menuModel.getTableData().schedule[index];
+        if (data) {
+          document.getElementById('crud-schedule-index').value = index;
+          document.getElementById('crud-schedule-day').value = data.day;
+          document.getElementById('crud-schedule-hours').value = data.hours;
+          document.getElementById('crud-schedule-status').value = data.status || 'Abierto';
+          document.getElementById('schedule-crud-modal-title').innerHTML = '<i class="fa-solid fa-pen"></i> Editar Horario';
+          document.getElementById('schedule-crud-modal').classList.add('active');
+        }
+      };
+    });
+
+    document.querySelectorAll('.delete-schedule-btn').forEach(btn => {
+      btn.onclick = async () => {
+        if (confirm('¿Desea eliminar este registro de horario?')) {
+          const index = btn.dataset.index;
+          const res = await this.menuModel.deleteSchedule(index);
+          if (res.success) {
+            this.cartView.showToast(res.message, 'success');
+            this.refreshAdminAndCustomerOrders();
+          }
+        }
+      };
+    });
+
+    // Combos
+    const addComboBtn = document.getElementById('open-add-combo-modal');
+    if (addComboBtn) {
+      addComboBtn.onclick = () => {
+        document.getElementById('combo-crud-form').reset();
+        document.getElementById('crud-combo-index').value = '';
+        document.getElementById('combo-crud-modal-title').innerHTML = '<i class="fa-solid fa-gift"></i> Agregar Combo Promocional';
+        document.getElementById('combo-crud-modal').classList.add('active');
+      };
+    }
+
+    document.querySelectorAll('.edit-combo-btn').forEach(btn => {
+      btn.onclick = () => {
+        const index = btn.dataset.index;
+        const data = this.menuModel.getTableData().combos[index];
+        if (data) {
+          document.getElementById('crud-combo-index').value = index;
+          document.getElementById('crud-combo-name').value = data.name;
+          document.getElementById('crud-combo-desc').value = data.description || data.includes || '';
+          document.getElementById('crud-combo-price').value = data.price;
+          document.getElementById('crud-combo-savings').value = data.savings || 'Ahorro Especial';
+          document.getElementById('combo-crud-modal-title').innerHTML = '<i class="fa-solid fa-pen"></i> Editar Combo Promocional';
+          document.getElementById('combo-crud-modal').classList.add('active');
+        }
+      };
+    });
+
+    document.querySelectorAll('.delete-combo-btn').forEach(btn => {
+      btn.onclick = async () => {
+        if (confirm('¿Desea eliminar este combo promocional?')) {
+          const index = btn.dataset.index;
+          const res = await this.menuModel.deleteCombo(index);
+          if (res.success) {
+            this.cartView.showToast(res.message, 'success');
+            this.refreshAdminAndCustomerOrders();
+          }
+        }
+      };
+    });
+
+    // Nutrición
+    const addNutrBtn = document.getElementById('open-add-nutrition-modal');
+    if (addNutrBtn) {
+      addNutrBtn.onclick = () => {
+        document.getElementById('nutrition-crud-form').reset();
+        document.getElementById('crud-nutrition-index').value = '';
+        document.getElementById('nutrition-crud-modal-title').innerHTML = '<i class="fa-solid fa-heart-pulse"></i> Agregar Registro Nutricional';
+        document.getElementById('nutrition-crud-modal').classList.add('active');
+      };
+    }
+
+    document.querySelectorAll('.edit-nutrition-btn').forEach(btn => {
+      btn.onclick = () => {
+        const index = btn.dataset.index;
+        const data = this.menuModel.getTableData().nutrition[index];
+        if (data) {
+          document.getElementById('crud-nutrition-index').value = index;
+          document.getElementById('crud-nutrition-dish').value = data.dish;
+          document.getElementById('crud-nutrition-calories').value = data.calories;
+          document.getElementById('crud-nutrition-protein').value = data.protein || '30g';
+          document.getElementById('crud-nutrition-carbs').value = data.carbs || '40g';
+          document.getElementById('crud-nutrition-fat').value = data.fat || '20g';
+          document.getElementById('nutrition-crud-modal-title').innerHTML = '<i class="fa-solid fa-pen"></i> Editar Registro Nutricional';
+          document.getElementById('nutrition-crud-modal').classList.add('active');
+        }
+      };
+    });
+
+    document.querySelectorAll('.delete-nutrition-btn').forEach(btn => {
+      btn.onclick = async () => {
+        if (confirm('¿Desea eliminar este registro nutricional?')) {
+          const index = btn.dataset.index;
+          const res = await this.menuModel.deleteNutrition(index);
+          if (res.success) {
+            this.cartView.showToast(res.message, 'success');
+            this.refreshAdminAndCustomerOrders();
+          }
+        }
+      };
+    });
+
+    // Clientes CRM
+    const addCustBtn = document.getElementById('open-add-customer-modal');
+    if (addCustBtn) {
+      addCustBtn.onclick = () => {
+        document.getElementById('customer-crud-form').reset();
+        document.getElementById('crud-customer-id').value = '';
+        document.getElementById('customer-crud-modal-title').innerHTML = '<i class="fa-solid fa-user-plus"></i> Registrar Nuevo Cliente CRM';
+        document.getElementById('customer-crud-modal').classList.add('active');
+      };
+    }
+
+    document.querySelectorAll('.edit-customer-btn').forEach(btn => {
+      btn.onclick = () => {
+        const id = btn.dataset.id;
+        const cust = this.dashboardModel.customers.find(c => String(c.id) === String(id));
+        if (cust) {
+          document.getElementById('crud-customer-id').value = cust.id;
+          document.getElementById('crud-customer-name').value = cust.name;
+          document.getElementById('crud-customer-email').value = cust.email;
+          document.getElementById('crud-customer-phone').value = cust.phone;
+          document.getElementById('crud-customer-points').value = cust.points || 0;
+          document.getElementById('customer-crud-modal-title').innerHTML = `<i class="fa-solid fa-user-pen"></i> Editar Cliente: ${cust.name}`;
+          document.getElementById('customer-crud-modal').classList.add('active');
+        }
+      };
+    });
+
+    document.querySelectorAll('.delete-customer-btn').forEach(btn => {
+      btn.onclick = async () => {
+        if (confirm('¿Desea eliminar este cliente del registro CRM?')) {
+          const id = btn.dataset.id;
+          const res = await this.dashboardModel.deleteCustomer(id);
+          if (res.success) {
+            this.cartView.showToast(res.message, 'success');
+            this.refreshAdminAndCustomerOrders();
+          }
+        }
+      };
+    });
   }
 
   renderCustomerOrders(allOrders) {
@@ -693,15 +1043,29 @@ export default class AppController {
       reservationForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        const reservationData = {
-          name: document.getElementById('res-name').value,
-          email: document.getElementById('res-email').value,
-          phone: document.getElementById('res-phone').value,
-          date: document.getElementById('res-date').value,
-          time: document.getElementById('res-time').value,
-          guests: Number(document.getElementById('res-guests').value),
-          zone: document.getElementById('res-zone').value
-        };
+        const name = document.getElementById('res-name').value.trim();
+        const email = document.getElementById('res-email').value.trim().toLowerCase();
+        const phone = document.getElementById('res-phone').value.trim();
+        const date = document.getElementById('res-date').value;
+        const time = document.getElementById('res-time').value;
+        const guests = Number(document.getElementById('res-guests').value);
+        const zone = document.getElementById('res-zone').value;
+
+        if (!name) return this.cartView.showToast('Por favor ingrese su nombre completo.', 'error');
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email || !emailRegex.test(email)) return this.cartView.showToast('Por favor ingrese un correo electrónico válido.', 'error');
+        if (!phone || phone.length < 7) return this.cartView.showToast('Por favor ingrese un teléfono de contacto válido.', 'error');
+        if (!date) return this.cartView.showToast('Seleccione la fecha de su reserva.', 'error');
+
+        const selectedDate = new Date(`${date}T00:00:00`);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (selectedDate < today) return this.cartView.showToast('La fecha de reserva no puede ser en el pasado.', 'error');
+
+        if (!time) return this.cartView.showToast('Seleccione la hora de la reserva.', 'error');
+        if (isNaN(guests) || guests < 1 || guests > 20) return this.cartView.showToast('El número de comensales debe ser entre 1 y 20 personas.', 'error');
+
+        const reservationData = { name, email, phone, date, time, guests, zone };
 
         const result = await this.tableModel.makeReservation(reservationData);
         if (result.success) {
@@ -715,5 +1079,6 @@ export default class AppController {
         }
       });
     }
+  }
   }
 }

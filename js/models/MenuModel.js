@@ -116,4 +116,130 @@ export default class MenuModel {
   getTableData() {
     return this.tableData;
   }
+
+  // --- CRUD HORARIOS ---
+  async addSchedule(scheduleData) {
+    try {
+      const res = await fetch('/api/schedule', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(scheduleData)
+      });
+      const data = await res.json();
+      if (data.success) await this.loadMenu();
+      return data;
+    } catch (e) {
+      return { success: false, error: 'Error al conectar con la API.' };
+    }
+  }
+
+  async updateSchedule(index, scheduleData) {
+    try {
+      const res = await fetch(`/api/schedule/${index}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(scheduleData)
+      });
+      const data = await res.json();
+      if (data.success) await this.loadMenu();
+      return data;
+    } catch (e) {
+      return { success: false, error: 'Error al conectar con la API.' };
+    }
+  }
+
+  async deleteSchedule(index) {
+    try {
+      const res = await fetch(`/api/schedule/${index}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (data.success) await this.loadMenu();
+      return data;
+    } catch (e) {
+      return { success: false, error: 'Error al conectar con la API.' };
+    }
+  }
+
+  // --- CRUD COMBOS ---
+  async addCombo(comboData) {
+    try {
+      const res = await fetch('/api/combos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(comboData)
+      });
+      const data = await res.json();
+      if (data.success) await this.loadMenu();
+      return data;
+    } catch (e) {
+      return { success: false, error: 'Error al conectar con la API.' };
+    }
+  }
+
+  async updateCombo(index, comboData) {
+    try {
+      const res = await fetch(`/api/combos/${index}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(comboData)
+      });
+      const data = await res.json();
+      if (data.success) await this.loadMenu();
+      return data;
+    } catch (e) {
+      return { success: false, error: 'Error al conectar con la API.' };
+    }
+  }
+
+  async deleteCombo(index) {
+    try {
+      const res = await fetch(`/api/combos/${index}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (data.success) await this.loadMenu();
+      return data;
+    } catch (e) {
+      return { success: false, error: 'Error al conectar con la API.' };
+    }
+  }
+
+  // --- CRUD NUTRICIÓN ---
+  async addNutrition(nutritionData) {
+    try {
+      const res = await fetch('/api/nutrition', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(nutritionData)
+      });
+      const data = await res.json();
+      if (data.success) await this.loadMenu();
+      return data;
+    } catch (e) {
+      return { success: false, error: 'Error al conectar con la API.' };
+    }
+  }
+
+  async updateNutrition(index, nutritionData) {
+    try {
+      const res = await fetch(`/api/nutrition/${index}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(nutritionData)
+      });
+      const data = await res.json();
+      if (data.success) await this.loadMenu();
+      return data;
+    } catch (e) {
+      return { success: false, error: 'Error al conectar con la API.' };
+    }
+  }
+
+  async deleteNutrition(index) {
+    try {
+      const res = await fetch(`/api/nutrition/${index}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (data.success) await this.loadMenu();
+      return data;
+    } catch (e) {
+      return { success: false, error: 'Error al conectar con la API.' };
+    }
+  }
 }

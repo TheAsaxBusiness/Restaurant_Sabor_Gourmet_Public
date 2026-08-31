@@ -377,6 +377,286 @@ app.get('/api/customers', (req, res) => {
   });
 });
 
+// ==========================================
+// API CLIENTES / CRM (POST, PUT, DELETE)
+// ==========================================
+app.post('/api/customers', (req, res) => {
+  const { name, email, phone, points, favoriteDish } = req.body;
+  if (!name || !name.trim()) {
+    return res.status(400).json({ success: false, error: 'El nombre del cliente es obligatorio.' });
+  }
+  const cleanEmail = (email || '').trim().toLowerCase();
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!cleanEmail || !emailRegex.test(cleanEmail)) {
+    return res.status(400).json({ success: false, error: 'Ingrese un correo electrónico válido.' });
+  }
+
+  readJsonFile('customers.json', (err, customerData) => {
+    if (err || !customerData) return res.status(500).json({ success: false, error: 'Error al leer clientes.' });
+
+    const newCustomer = {
+      id: `c-${Date.now().toString().slice(-4)}`,
+      name: name.trim(),
+      email: cleanEmail,
+      phone: (phone || '809-555-0000').trim(),
+      visits: 1,
+      points: Number(points) >= 0 ? Number(points) : 50,
+      favoriteDish: favoriteDish || 'Mofongo Tradicional',
+      lastOrderDate: new Date().toISOString().split('T')[0]
+    };
+
+    customerData.customers.push(newCustomer);
+    writeJsonFile('customers.json', customerData, (writeErr) => {
+      if (writeErr) return res.status(500).json({ success: false, error: 'Error al guardar el cliente.' });
+      res.json({ success: true, message: `¡Cliente "${newCustomer.name}" registrado con éxito!`, customer: newCustomer });
+    });
+  });
+});
+
+app.put('/api/customers/:id', (req, res) => {
+  const customerId = req.params.id;
+  const { name, email, phone, points, favoriteDish } = req.body;
+
+  readJsonFile('customers.json', (err, customerData) => {
+    if (err || !customerData) return res.status(500).json({ success: false, error: 'Error al leer clientes.' });
+
+    const customerIndex = customerData.customers.findIndex(c => String(c.id) === String(customerId));
+    if (customerIndex === -1) return res.status(404).json({ success: false, error: 'Cliente no encontrado.' });
+
+    const target = customerData.customers[customerIndex];
+    if (name) target.name = name.trim();
+    if (email) target.email = email.trim();
+    if (phone) target.phone = phone.trim();
+    if (points !== undefined) target.points = Math.max(0, Number(points));
+    if (favoriteDish) target.favoriteDish = favoriteDish.trim();
+
+    writeJsonFile('customers.json', customerData, (writeErr) => {
+      if (writeErr) return res.status(500).json({ success: false, error: 'Error al actualizar cliente.' });
+      res.json({ success: true, message: `¡Cliente "${target.name}" actualizado con éxito!`, customer: target });
+    });
+  });
+});
+
+app.delete('/api/customers/:id', (req, res) => {
+  const customerId = req.params.id;
+
+  readJsonFile('customers.json', (err, customerData) => {
+    if (err || !customerData) return res.status(500).json({ success: false, error: 'Error al leer clientes.' });
+
+    const initialLength = customerData.customers.length;
+    customerData.customers = customerData.customers.filter(c => String(c.id) !== String(customerId));
+
+    if (customerData.customers.length === initialLength) {
+      return res.status(404).json({ success: false, error: 'Cliente no encontrado.' });
+    }
+
+    writeJsonFile('customers.json', customerData, (writeErr) => {
+      if (writeErr) return res.status(500).json({ success: false, error: 'Error al eliminar cliente.' });
+      res.json({ success: true, message: 'Cliente eliminado del registro CRM.' });
+    });
+  });
+});
+
+// ==========================================
+// API HORARIOS (POST, PUT, DELETE)
+// ==========================================
+app.post('/api/schedule', (req, res) => {
+  const { day, hours, status } = req.body;
+  if (!day || !hours) {
+    return res.status(400).json({ success: false, error: 'Días y horario de atención son obligatorios.' });
+  }
+
+  readJsonFile('menu.json', (err, menuData) => {
+    if (err || !menuData) return res.status(500).json({ success: false, error: 'Error al leer la base de datos.' });
+
+    menuData.schedule = menuData.schedule || [];
+    const newSchedule = { day: day.trim(), hours: hours.trim(), status: status || 'Abierto' };
+    menuData.schedule.push(newSchedule);
+
+    writeJsonFile('menu.json', menuData, (writeErr) => {
+      if (writeErr) return res.status(500).json({ success: false, error: 'Error al guardar el horario.' });
+      res.json({ success: true, message: `¡Horario para "${day}" creado con éxito!`, schedule: menuData.schedule });
+    });
+  });
+});
+
+app.put('/api/schedule/:index', (req, res) => {
+  const index = parseInt(req.params.index, 10);
+  const { day, hours, status } = req.body;
+
+  readJsonFile('menu.json', (err, menuData) => {
+    if (err || !menuData || !menuData.schedule) return res.status(500).json({ success: false, error: 'Error al leer los horarios.' });
+    if (isNaN(index) || index < 0 || index >= menuData.schedule.length) {
+      return res.status(404).json({ success: false, error: 'Registro de horario no encontrado.' });
+    }
+
+    if (day) menuData.schedule[index].day = day.trim();
+    if (hours) menuData.schedule[index].hours = hours.trim();
+    if (status) menuData.schedule[index].status = status.trim();
+
+    writeJsonFile('menu.json', menuData, (writeErr) => {
+      if (writeErr) return res.status(500).json({ success: false, error: 'Error al actualizar horario.' });
+      res.json({ success: true, message: '¡Horario actualizado correctamente!', schedule: menuData.schedule });
+    });
+  });
+});
+
+app.delete('/api/schedule/:index', (req, res) => {
+  const index = parseInt(req.params.index, 10);
+
+  readJsonFile('menu.json', (err, menuData) => {
+    if (err || !menuData || !menuData.schedule) return res.status(500).json({ success: false, error: 'Error al leer los horarios.' });
+    if (isNaN(index) || index < 0 || index >= menuData.schedule.length) {
+      return res.status(404).json({ success: false, error: 'Registro de horario no encontrado.' });
+    }
+
+    menuData.schedule.splice(index, 1);
+
+    writeJsonFile('menu.json', menuData, (writeErr) => {
+      if (writeErr) return res.status(500).json({ success: false, error: 'Error al eliminar el horario.' });
+      res.json({ success: true, message: 'Registro de horario eliminado.', schedule: menuData.schedule });
+    });
+  });
+});
+
+// ==========================================
+// API COMBOS PROMOCIONALES (POST, PUT, DELETE)
+// ==========================================
+app.post('/api/combos', (req, res) => {
+  const { name, description, price, savings } = req.body;
+  if (!name || !price || Number(price) <= 0) {
+    return res.status(400).json({ success: false, error: 'Nombre del combo y un precio mayor a 0 son obligatorios.' });
+  }
+
+  readJsonFile('menu.json', (err, menuData) => {
+    if (err || !menuData) return res.status(500).json({ success: false, error: 'Error al leer la base de datos.' });
+
+    menuData.combos = menuData.combos || [];
+    const newCombo = {
+      name: name.trim(),
+      description: (description || 'Combo especial').trim(),
+      price: Number(price),
+      savings: (savings || 'Ahorro Especial').trim()
+    };
+    menuData.combos.push(newCombo);
+
+    writeJsonFile('menu.json', menuData, (writeErr) => {
+      if (writeErr) return res.status(500).json({ success: false, error: 'Error al guardar el combo.' });
+      res.json({ success: true, message: `¡Combo "${name}" agregado con éxito!`, combos: menuData.combos });
+    });
+  });
+});
+
+app.put('/api/combos/:index', (req, res) => {
+  const index = parseInt(req.params.index, 10);
+  const { name, description, price, savings } = req.body;
+
+  readJsonFile('menu.json', (err, menuData) => {
+    if (err || !menuData || !menuData.combos) return res.status(500).json({ success: false, error: 'Error al leer los combos.' });
+    if (isNaN(index) || index < 0 || index >= menuData.combos.length) {
+      return res.status(404).json({ success: false, error: 'Combo promocional no encontrado.' });
+    }
+
+    if (name) menuData.combos[index].name = name.trim();
+    if (description) menuData.combos[index].description = description.trim();
+    if (price && Number(price) > 0) menuData.combos[index].price = Number(price);
+    if (savings) menuData.combos[index].savings = savings.trim();
+
+    writeJsonFile('menu.json', menuData, (writeErr) => {
+      if (writeErr) return res.status(500).json({ success: false, error: 'Error al actualizar el combo.' });
+      res.json({ success: true, message: '¡Combo promocional actualizado con éxito!', combos: menuData.combos });
+    });
+  });
+});
+
+app.delete('/api/combos/:index', (req, res) => {
+  const index = parseInt(req.params.index, 10);
+
+  readJsonFile('menu.json', (err, menuData) => {
+    if (err || !menuData || !menuData.combos) return res.status(500).json({ success: false, error: 'Error al leer los combos.' });
+    if (isNaN(index) || index < 0 || index >= menuData.combos.length) {
+      return res.status(404).json({ success: false, error: 'Combo promocional no encontrado.' });
+    }
+
+    menuData.combos.splice(index, 1);
+
+    writeJsonFile('menu.json', menuData, (writeErr) => {
+      if (writeErr) return res.status(500).json({ success: false, error: 'Error al eliminar el combo.' });
+      res.json({ success: true, message: 'Combo promocional eliminado.', combos: menuData.combos });
+    });
+  });
+});
+
+// ==========================================
+// API INFORMACIÓN NUTRICIONAL (POST, PUT, DELETE)
+// ==========================================
+app.post('/api/nutrition', (req, res) => {
+  const { dish, calories, protein, carbs, fat } = req.body;
+  if (!dish || !calories) {
+    return res.status(400).json({ success: false, error: 'Nombre del plato y valor calórico son obligatorios.' });
+  }
+
+  readJsonFile('menu.json', (err, menuData) => {
+    if (err || !menuData) return res.status(500).json({ success: false, error: 'Error al leer la base de datos.' });
+
+    menuData.nutrition = menuData.nutrition || [];
+    const newNutr = {
+      dish: dish.trim(),
+      calories: calories.trim(),
+      protein: (protein || '0g').trim(),
+      carbs: (carbs || '0g').trim(),
+      fat: (fat || '0g').trim()
+    };
+    menuData.nutrition.push(newNutr);
+
+    writeJsonFile('menu.json', menuData, (writeErr) => {
+      if (writeErr) return res.status(500).json({ success: false, error: 'Error al guardar información nutricional.' });
+      res.json({ success: true, message: `¡Registro nutricional para "${dish}" agregado!`, nutrition: menuData.nutrition });
+    });
+  });
+});
+
+app.put('/api/nutrition/:index', (req, res) => {
+  const index = parseInt(req.params.index, 10);
+  const { dish, calories, protein, carbs, fat } = req.body;
+
+  readJsonFile('menu.json', (err, menuData) => {
+    if (err || !menuData || !menuData.nutrition) return res.status(500).json({ success: false, error: 'Error al leer la nutrición.' });
+    if (isNaN(index) || index < 0 || index >= menuData.nutrition.length) {
+      return res.status(404).json({ success: false, error: 'Registro nutricional no encontrado.' });
+    }
+
+    if (dish) menuData.nutrition[index].dish = dish.trim();
+    if (calories) menuData.nutrition[index].calories = calories.trim();
+    if (protein) menuData.nutrition[index].protein = protein.trim();
+    if (carbs) menuData.nutrition[index].carbs = carbs.trim();
+    if (fat) menuData.nutrition[index].fat = fat.trim();
+
+    writeJsonFile('menu.json', menuData, (writeErr) => {
+      if (writeErr) return res.status(500).json({ success: false, error: 'Error al actualizar nutrición.' });
+      res.json({ success: true, message: '¡Información nutricional actualizada!', nutrition: menuData.nutrition });
+    });
+  });
+});
+
+app.delete('/api/nutrition/:index', (req, res) => {
+  const index = parseInt(req.params.index, 10);
+
+  readJsonFile('menu.json', (err, menuData) => {
+    if (err || !menuData || !menuData.nutrition) return res.status(500).json({ success: false, error: 'Error al leer la nutrición.' });
+    if (isNaN(index) || index < 0 || index >= menuData.nutrition.length) {
+      return res.status(404).json({ success: false, error: 'Registro nutricional no encontrado.' });
+    }
+
+    menuData.nutrition.splice(index, 1);
+
+    writeJsonFile('menu.json', menuData, (writeErr) => {
+      if (writeErr) return res.status(500).json({ success: false, error: 'Error al eliminar nutrición.' });
+      res.json({ success: true, message: 'Registro nutricional eliminado.', nutrition: menuData.nutrition });
+    });
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`[SERVER] Servidor Restaurante Sabor Gourmet activo en http://localhost:${PORT}`);
 });

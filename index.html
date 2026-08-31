@@ -377,6 +377,136 @@
   </div>
 
   <!-- ==========================================
+       MODAL AGREGAR / EDITAR HORARIO (CRUD HORARIOS)
+       ========================================== -->
+  <div id="schedule-crud-modal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-card" style="max-width: 440px;">
+      <button class="close-btn" id="close-schedule-crud-modal" type="button" aria-label="Cerrar modal">&times;</button>
+      <h3 id="schedule-crud-modal-title" style="color: var(--color-primary); margin-bottom: 1.25rem;"><i class="fa-solid fa-clock"></i> Agregar Nuevo Horario</h3>
+      
+      <form id="schedule-crud-form">
+        <input type="hidden" id="crud-schedule-index">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label><i class="fa-solid fa-calendar-days"></i> Días de Atención</label>
+          <input type="text" id="crud-schedule-day" class="form-control" placeholder="Ej. Lunes - Jueves" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label><i class="fa-solid fa-clock"></i> Horario de Atención</label>
+          <input type="text" id="crud-schedule-hours" class="form-control" placeholder="Ej. 11:30 AM - 10:00 PM" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label><i class="fa-solid fa-toggle-on"></i> Estado de Servicio</label>
+          <select id="crud-schedule-status" class="form-control">
+            <option value="Abierto">Abierto</option>
+            <option value="Cerrado">Cerrado</option>
+            <option value="Horario Especial">Horario Especial</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-primary" style="width: 100%;"><i class="fa-solid fa-floppy-disk"></i> Guardar Horario</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL AGREGAR / EDITAR COMBO (CRUD COMBOS)
+       ========================================== -->
+  <div id="combo-crud-modal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-card" style="max-width: 460px;">
+      <button class="close-btn" id="close-combo-crud-modal" type="button" aria-label="Cerrar modal">&times;</button>
+      <h3 id="combo-crud-modal-title" style="color: var(--color-primary); margin-bottom: 1.25rem;"><i class="fa-solid fa-gift"></i> Agregar Combo Promocional</h3>
+      
+      <form id="combo-crud-form">
+        <input type="hidden" id="crud-combo-index">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label><i class="fa-solid fa-box-open"></i> Nombre del Combo</label>
+          <input type="text" id="crud-combo-name" class="form-control" placeholder="Ej. Combo Familiar Sabor Gourmet" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label><i class="fa-solid fa-list-check"></i> Contenido / Incluye</label>
+          <textarea id="crud-combo-desc" class="form-control" rows="2" placeholder="Ej. 2 Mofongos + 1 Chicharrón + 4 Bebidas" required></textarea>
+        </div>
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label><i class="fa-solid fa-tag"></i> Precio Especial (RD$)</label>
+          <input type="number" id="crud-combo-price" class="form-control" placeholder="Ej. 1950" min="1" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label><i class="fa-solid fa-piggy-bank"></i> Ahorro Estimado</label>
+          <input type="text" id="crud-combo-savings" class="form-control" placeholder="Ej. Ahorras RD$ 380" required>
+        </div>
+        <button type="submit" class="btn-primary" style="width: 100%;"><i class="fa-solid fa-floppy-disk"></i> Guardar Combo</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL AGREGAR / EDITAR NUTRICIÓN (CRUD NUTRICIÓN)
+       ========================================== -->
+  <div id="nutrition-crud-modal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-card" style="max-width: 460px;">
+      <button class="close-btn" id="close-nutrition-crud-modal" type="button" aria-label="Cerrar modal">&times;</button>
+      <h3 id="nutrition-crud-modal-title" style="color: var(--color-primary); margin-bottom: 1.25rem;"><i class="fa-solid fa-heart-pulse"></i> Agregar Registro Nutricional</h3>
+      
+      <form id="nutrition-crud-form">
+        <input type="hidden" id="crud-nutrition-index">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label><i class="fa-solid fa-utensils"></i> Nombre del Plato</label>
+          <input type="text" id="crud-nutrition-dish" class="form-control" placeholder="Ej. Mofongo de Mariscos Gourmet" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label><i class="fa-solid fa-fire"></i> Calorías</label>
+          <input type="text" id="crud-nutrition-calories" class="form-control" placeholder="Ej. 680 kcal" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 1rem; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem;">
+          <div>
+            <label style="font-size: 0.8rem;">Proteínas</label>
+            <input type="text" id="crud-nutrition-protein" class="form-control" placeholder="42g" value="30g">
+          </div>
+          <div>
+            <label style="font-size: 0.8rem;">Carbohidratos</label>
+            <input type="text" id="crud-nutrition-carbs" class="form-control" placeholder="55g" value="40g">
+          </div>
+          <div>
+            <label style="font-size: 0.8rem;">Grasas</label>
+            <input type="text" id="crud-nutrition-fat" class="form-control" placeholder="28g" value="20g">
+          </div>
+        </div>
+        <button type="submit" class="btn-primary" style="width: 100%;"><i class="fa-solid fa-floppy-disk"></i> Guardar Nutrición</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL AGREGAR / EDITAR CLIENTE (CRUD CLIENTES CRM)
+       ========================================== -->
+  <div id="customer-crud-modal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-card" style="max-width: 480px;">
+      <button class="close-btn" id="close-customer-crud-modal" type="button" aria-label="Cerrar modal">&times;</button>
+      <h3 id="customer-crud-modal-title" style="color: var(--color-primary); margin-bottom: 1.25rem;"><i class="fa-solid fa-user-plus"></i> Registrar Nuevo Cliente CRM</h3>
+      
+      <form id="customer-crud-form">
+        <input type="hidden" id="crud-customer-id">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label><i class="fa-solid fa-user"></i> Nombre Completo</label>
+          <input type="text" id="crud-customer-name" class="form-control" placeholder="Ej. Maria Lopez" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label><i class="fa-solid fa-envelope"></i> Correo Electrónico</label>
+          <input type="email" id="crud-customer-email" class="form-control" placeholder="maria@ejemplo.com" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label><i class="fa-solid fa-phone"></i> Teléfono</label>
+          <input type="text" id="crud-customer-phone" class="form-control" placeholder="809-555-0199" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label><i class="fa-solid fa-star"></i> Puntos de Fidelidad</label>
+          <input type="number" id="crud-customer-points" class="form-control" value="100" min="0" required>
+        </div>
+        <button type="submit" class="btn-primary" style="width: 100%;"><i class="fa-solid fa-floppy-disk"></i> Guardar Cliente CRM</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================
        MODAL DE DETALLE DEL PLATO
        ========================================== -->
   <div id="dish-modal" class="modal-overlay" aria-hidden="true">
