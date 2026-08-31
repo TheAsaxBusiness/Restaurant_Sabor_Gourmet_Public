@@ -98,18 +98,59 @@ export default class AppController {
     const formLogin = document.getElementById('main-login-form');
     const logoutBtn = document.getElementById('logout-btn');
     const brandLogo = document.getElementById('brand-logo');
+    const emailInput = document.getElementById('login-email-input');
+    const passInput = document.getElementById('login-pass-input');
+    const errorBanner = document.getElementById('login-error-msg');
+    const errorText = document.getElementById('login-error-text');
+    const togglePassBtn = document.getElementById('toggle-pass-visibility');
+    const passIcon = document.getElementById('pass-visibility-icon');
+
+    // Alternar visibilidad de contraseña (mostrar/ocultar)
+    if (togglePassBtn && passInput && passIcon) {
+      togglePassBtn.addEventListener('click', () => {
+        const isPass = passInput.type === 'password';
+        passInput.type = isPass ? 'text' : 'password';
+        passIcon.className = isPass ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+      });
+    }
+
+    // Limpiar errores visuales al escribir
+    const clearErrors = () => {
+      if (errorBanner) errorBanner.style.display = 'none';
+      if (emailInput) emailInput.style.borderColor = '';
+      if (passInput) passInput.style.borderColor = '';
+    };
+
+    if (emailInput) emailInput.addEventListener('input', clearErrors);
+    if (passInput) passInput.addEventListener('input', clearErrors);
 
     if (formLogin) {
       formLogin.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const email = document.getElementById('login-email-input').value;
-        const pass = document.getElementById('login-pass-input').value;
+        clearErrors();
+
+        const email = emailInput ? emailInput.value : '';
+        const pass = passInput ? passInput.value : '';
 
         const res = await this.authModel.login(email, pass);
         if (res.success) {
-          this.cartView.showToast(`Bienvenido de nuevo, ${res.user.name}`, 'success');
+          if (emailInput) emailInput.value = '';
+          if (passInput) passInput.value = '';
+          this.cartView.showToast(res.message || `Bienvenido de nuevo, ${res.user.name}`, 'success');
           this.updateAuthUI(true);
         } else {
+          // Mostrar banner de error visual explícito
+          if (errorBanner && errorText) {
+            errorText.textContent = res.message;
+            errorBanner.style.display = 'block';
+          }
+          if (res.message.includes('correo') && emailInput) {
+            emailInput.style.borderColor = '#e74c3c';
+            emailInput.focus();
+          } else if (res.message.includes('contraseña') && passInput) {
+            passInput.style.borderColor = '#e74c3c';
+            passInput.focus();
+          }
           this.cartView.showToast(res.message || 'Error al iniciar sesión.', 'error');
         }
       });

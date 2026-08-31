@@ -5,28 +5,32 @@
       "email": "carlos@cliente.com",
       "name": "Carlos Mendoza",
       "role": "customer",
-      "phone": "809-555-0142"
+      "phone": "809-555-0142",
+      "password": "123456"
     },
     {
       "id": "USR-102",
       "email": "altagracia@cliente.com",
       "name": "Altagracia Guzmán",
       "role": "customer",
-      "phone": "809-555-0188"
+      "phone": "809-555-0188",
+      "password": "123456"
     },
     {
       "id": "USR-201",
       "email": "admin@sabor.com",
       "name": "Gerencia Sabor Gourmet",
       "role": "admin",
-      "phone": "809-555-0100"
+      "phone": "809-555-0100",
+      "password": "admin123"
     },
     {
       "id": "USR-202",
       "email": "cocina@sabor.com",
       "name": "Jefe de Cocina",
       "role": "admin",
-      "phone": "809-555-0101"
+      "phone": "809-555-0101",
+      "password": "admin123"
     }
   ]
 }

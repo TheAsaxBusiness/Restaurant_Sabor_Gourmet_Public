@@ -28,38 +28,66 @@ const writeJsonFile = (filename, content, callback) => {
 };
 
 // ==========================================
-// API AUTENTICACIÓN
+// API AUTENTICACIÓN (CON VALIDACIONES ROBUSTAS)
 // ==========================================
 app.post('/api/login', (req, res) => {
-  const { email } = req.body;
-  if (!email) {
-    return res.status(400).json({ error: 'Debe ingresar un correo electrónico.' });
+  const { email, password } = req.body;
+
+  if (!email || !email.trim()) {
+    return res.status(400).json({ success: false, error: 'Por favor, ingrese su correo electrónico.' });
+  }
+
+  const cleanEmail = email.toLowerCase().trim();
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(cleanEmail)) {
+    return res.status(400).json({ success: false, error: 'El correo electrónico ingresado no es válido (ejemplo: usuario@dominio.com).' });
+  }
+
+  if (!password || !password.trim()) {
+    return res.status(400).json({ success: false, error: 'Por favor, ingrese su contraseña.' });
+  }
+
+  if (password.length < 6) {
+    return res.status(400).json({ success: false, error: 'La contraseña debe tener al menos 6 caracteres.' });
   }
 
   readJsonFile('users.json', (err, data) => {
     if (err || !data || !data.users) {
-      return res.status(500).json({ error: 'Error al consultar usuarios.' });
+      return res.status(500).json({ success: false, error: 'Error al consultar la base de datos de usuarios.' });
     }
 
-    const cleanEmail = email.toLowerCase().trim();
     const foundUser = data.users.find(u => u.email.toLowerCase() === cleanEmail);
 
     if (foundUser) {
-      res.json({ success: true, user: foundUser });
+      // Validar contraseña para usuario existente
+      if (foundUser.password && foundUser.password !== password) {
+        return res.status(401).json({ success: false, error: 'Contraseña incorrecta. Por favor verifique sus datos.' });
+      }
+
+      // Si no tenía contraseña registrada previa, guardarla
+      if (!foundUser.password) {
+        foundUser.password = password;
+        writeJsonFile('users.json', data, () => {});
+      }
+
+      res.json({ success: true, user: foundUser, message: '¡Sesión iniciada con éxito!' });
     } else {
+      // Registrar nuevo usuario cliente con su contraseña validada
       const newUser = {
         id: `USR-${Date.now().toString().slice(-3)}`,
         email: cleanEmail,
         name: cleanEmail.split('@')[0],
         role: 'customer',
-        phone: '809-555-0000'
+        phone: '809-555-0000',
+        password: password
       };
       data.users.push(newUser);
       writeJsonFile('users.json', data, () => {});
-      res.json({ success: true, user: newUser });
+      res.json({ success: true, user: newUser, message: '¡Cuenta creada e sesión iniciada!' });
     }
   });
 });
+
 
 // ==========================================
 // API MENÚ (GET, POST, PUT, DELETE)
