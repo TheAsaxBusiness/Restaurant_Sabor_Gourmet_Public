@@ -1,0 +1,29 @@
+{
+  "orders": [
+    {
+      "id": "PED-1001",
+      "customerName": "Carlos Mendoza",
+      "customerEmail": "carlos@cliente.com",
+      "items": [
+        { "name": "Mofongo de Mariscos Gourmet", "quantity": 1, "price": 850 },
+        { "name": "Ensalada Tropical de la Casa", "quantity": 1, "price": 320 }
+      ],
+      "totals": { "subtotal": 1170, "tax": 210.6, "total": 1380.6 },
+      "status": "En Cocina",
+      "ncf": "B0100001042",
+      "createdAt": "2026-08-30 16:30"
+    },
+    {
+      "id": "PED-1002",
+      "customerName": "Altagracia Guzmán",
+      "customerEmail": "altagracia@cliente.com",
+      "items": [
+        { "name": "Pescado Frito con Tostones Crocantes", "quantity": 2, "price": 780 }
+      ],
+      "totals": { "subtotal": 1560, "tax": 280.8, "total": 1840.8 },
+      "status": "Entregado",
+      "ncf": "B0100001043",
+      "createdAt": "2026-08-30 15:45"
+    }
+  ]
+}

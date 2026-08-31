@@ -1,6 +1,5 @@
 // ==========================================
-// CARTVIEW.JS
-// Vista del Carrito de Compras
+// CARTVIEW.JS - VISTA DEL CARRITO DE COMPRAS
 // Enmanuel - Dev 4
 // ==========================================
 
@@ -66,9 +65,9 @@ export default class CartView {
         // Carrito vacío
         if (!cartItems || cartItems.length === 0) {
             this.cartContent.innerHTML = `
-                <div class="empty-cart">
-                    <h3>🛒 Tu carrito está vacío</h3>
-                    <p>¡Agrega algunos platos deliciosos!</p>
+                <div class="empty-cart" style="text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
+                    <h3 style="color: var(--color-primary); font-size: 1.5rem; margin-bottom: 0.5rem;"><i class="fa-solid fa-cart-flatbed-suitcases"></i> Tu carrito está vacío</h3>
+                    <p>¡Explora nuestro menú gastronómico y agrega tus platos favoritos!</p>
                 </div>
             `;
             return;
@@ -84,49 +83,53 @@ export default class CartView {
             const image = item.image || item.img || "";
 
             return `
-                <tr>
-                    <td>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.08);">
+                    <td style="padding: 0.75rem 0.5rem;">
                         <img
                             src="${image}"
                             alt="${name}"
                             class="cart-image"
+                            style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;"
                         >
                     </td>
 
-                    <td>${name}</td>
+                    <td style="padding: 0.75rem 0.5rem; font-weight: 600; color: var(--text-main);">${name}</td>
 
-                    <td>
-                        <div class="quantity-controls">
+                    <td style="padding: 0.75rem 0.5rem;">
+                        <div class="quantity-controls" style="display: flex; align-items: center; gap: 0.5rem;">
                             <button
                                 class="qty-btn decrease-btn"
                                 data-id="${item.id}"
                                 data-action="decrease"
                                 type="button"
+                                style="background: var(--bg-surface-elevated); color: var(--text-main); border: 1px solid var(--color-primary); width: 26px; height: 26px; border-radius: 50%; font-weight: 700; cursor: pointer;"
                             >−</button>
 
-                            <span class="quantity">${quantity}</span>
+                            <span class="quantity" style="font-weight: 700; color: var(--color-primary);">${quantity}</span>
 
                             <button
                                 class="qty-btn increase-btn"
                                 data-id="${item.id}"
                                 data-action="increase"
                                 type="button"
+                                style="background: var(--bg-surface-elevated); color: var(--text-main); border: 1px solid var(--color-primary); width: 26px; height: 26px; border-radius: 50%; font-weight: 700; cursor: pointer;"
                             >+</button>
                         </div>
                     </td>
 
-                    <td>RD$ ${price.toFixed(2)}</td>
+                    <td style="padding: 0.75rem 0.5rem; color: var(--text-muted); font-size: 0.9rem;">RD$ ${price.toFixed(2)}</td>
 
-                    <td>RD$ ${subtotal.toFixed(2)}</td>
+                    <td style="padding: 0.75rem 0.5rem; font-weight: 700; color: var(--color-secondary);">RD$ ${subtotal.toFixed(2)}</td>
 
-                    <td>
+                    <td style="padding: 0.75rem 0.5rem; text-align: center;">
                         <button
                             class="delete-btn"
                             data-id="${item.id}"
                             type="button"
                             title="Eliminar producto"
+                            style="background: transparent; color: #E74C3C; border: none; font-size: 1.1rem; cursor: pointer;"
                         >
-                            🗑️
+                            <i class="fa-solid fa-trash-can"></i>
                         </button>
                     </td>
                 </tr>
@@ -135,17 +138,17 @@ export default class CartView {
 
         // Crear la tabla completa
         this.cartContent.innerHTML = `
-            <div class="cart-table-container">
+            <div class="cart-table-container" style="overflow-x: auto; margin-bottom: 1.5rem;">
 
-                <table class="cart-table">
+                <table class="cart-table" style="width: 100%; border-collapse: collapse; text-align: left;">
                     <thead>
-                        <tr>
-                            <th>Foto</th>
-                            <th>Plato</th>
-                            <th>Cantidad</th>
-                            <th>Precio</th>
-                            <th>Subtotal</th>
-                            <th>Eliminar</th>
+                        <tr style="border-bottom: 2px solid var(--color-primary); color: var(--color-primary);">
+                            <th style="padding: 0.5rem;">Foto</th>
+                            <th style="padding: 0.5rem;">Plato</th>
+                            <th style="padding: 0.5rem;">Cant.</th>
+                            <th style="padding: 0.5rem;">Precio</th>
+                            <th style="padding: 0.5rem;">Subtotal</th>
+                            <th style="padding: 0.5rem;"></th>
                         </tr>
                     </thead>
 
@@ -156,27 +159,29 @@ export default class CartView {
 
             </div>
 
-            <div class="cart-totals">
-                <p>
+            <div class="cart-totals" style="background: var(--bg-primary); border: 1px solid rgba(212,175,55,0.2); padding: 1.25rem; border-radius: var(--border-radius-md);">
+                <p style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; color: var(--text-muted);">
                     Subtotal:
-                    <strong>RD$ ${Number(totals.subtotal || 0).toFixed(2)}</strong>
+                    <strong style="color: var(--text-main);">RD$ ${Number(totals.subtotal || 0).toFixed(2)}</strong>
                 </p>
 
-                <p>
+                <p style="display: flex; justify-content: space-between; margin-bottom: 0.75rem; color: var(--text-muted);">
                     ITBIS (18%):
-                    <strong>RD$ ${Number(totals.tax || 0).toFixed(2)}</strong>
+                    <strong style="color: var(--text-main);">RD$ ${Number(totals.tax || 0).toFixed(2)}</strong>
                 </p>
 
-                <h3>
-                    Total: RD$ ${Number(totals.total || 0).toFixed(2)}
+                <h3 style="display: flex; justify-content: space-between; font-size: 1.4rem; color: var(--color-secondary); border-top: 1px solid rgba(255,255,255,0.1); padding-top: 0.75rem; margin-bottom: 1.25rem;">
+                    <span>Total:</span>
+                    <span>RD$ ${Number(totals.total || 0).toFixed(2)}</span>
                 </h3>
 
                 <button
                     id="checkout-button"
-                    class="checkout-button"
+                    class="checkout-button btn-primary"
                     type="button"
+                    style="width: 100%; font-size: 1.05rem;"
                 >
-                    Finalizar Pedido
+                    <i class="fa-solid fa-credit-card"></i> Finalizar Pedido
                 </button>
             </div>
         `;
@@ -225,7 +230,7 @@ export default class CartView {
         if (checkoutButton) {
             checkoutButton.addEventListener("click", () => {
                 this.showToast(
-                    "¡Gracias por tu pedido! 🍽️",
+                    "¡Gracias por tu pedido en Sabor Gourmet!",
                     "success"
                 );
 
@@ -261,11 +266,13 @@ export default class CartView {
         }
 
         const toast = document.createElement("div");
+        const iconClass = type === 'success' ? 'fa-circle-check' : 'fa-circle-info';
 
         toast.className = `toast ${type}`;
-        toast.textContent = message;
+        toast.innerHTML = `<i class="fa-solid ${iconClass}" style="color: var(--color-primary); margin-right: 0.5rem;"></i> ${message}`;
 
-        document.body.appendChild(toast);
+        const container = document.getElementById("toast-container") || document.body;
+        container.appendChild(toast);
 
         setTimeout(() => {
             toast.classList.add("show");

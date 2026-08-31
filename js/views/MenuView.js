@@ -1,40 +1,49 @@
-class MenuView {
+// ==========================================
+// MENUVIEW.JS - VISTA DEL CATÁLOGO DE MENÚ (CON SELECCIÓN POR ROL)
+// Enmanuel - Dev 4
+// ==========================================
+
+export default class MenuView {
   constructor() {
-    this.categoriesContainer = null;
     this.dishesContainer = null;
+    this.categoriesContainer = null;
+    this.dishModal = null;
+    this.dishModalContent = null;
+    this.closeModalBtn = null;
+    this.userRole = 'customer';
   }
 
   init() {
-    this.categoriesContainer = document.getElementById('categories');
     this.dishesContainer = document.getElementById('dishes');
+    this.categoriesContainer = document.getElementById('categories');
+    this.dishModal = document.getElementById('dish-modal');
+    this.dishModalContent = document.getElementById('dish-modal-content');
+    this.closeModalBtn = document.getElementById('close-dish-modal');
+
+    if (this.closeModalBtn && this.dishModal) {
+      this.closeModalBtn.addEventListener('click', () => this.closeDishModal());
+      this.dishModal.addEventListener('click', (e) => {
+        if (e.target === this.dishModal) this.closeDishModal();
+      });
+    }
   }
 
-  renderCategories(categories, activeCategory, onSelectCategory) {
+  setUserRole(role) {
+    this.userRole = role || 'customer';
+  }
+
+  renderCategories(categories, activeCategory, onCategorySelect) {
+    if (!this.categoriesContainer) return;
+
     this.categoriesContainer.innerHTML = '';
-
     const ul = document.createElement('ul');
-    ul.style.listStyle = 'none';
-    ul.style.padding = '0';
-    ul.style.display = 'flex';
-    ul.style.gap = '10px';
-    ul.style.flexWrap = 'wrap';
+    ul.className = 'categories-list';
 
-    categories.forEach(categoria => {
+    categories.forEach(cat => {
       const li = document.createElement('li');
-      li.textContent = categoria;
-      li.style.padding = '8px 16px';
-      li.style.cursor = 'pointer';
-      li.style.borderRadius = '4px';
-      li.style.transition = 'all 0.2s';
-
-      if (categoria === activeCategory) {
-        li.style.backgroundColor = '#ff6b35';
-        li.style.color = 'white';
-      } else {
-        li.style.backgroundColor = '#f0f0f0';
-      }
-
-      li.addEventListener('click', () => onSelectCategory(categoria));
+      li.className = `category-pill ${cat === activeCategory ? 'active' : ''}`;
+      li.textContent = cat;
+      li.addEventListener('click', () => onCategorySelect(cat));
       ul.appendChild(li);
     });
 
@@ -42,135 +51,95 @@ class MenuView {
   }
 
   renderDishes(dishes, onAddToCart, onViewDetails) {
+    if (!this.dishesContainer) return;
+
     this.dishesContainer.innerHTML = '';
 
-    const grid = document.createElement('div');
-    grid.style.display = 'grid';
-    grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(250px, 1fr))';
-    grid.style.gap = '20px';
+    if (!dishes || dishes.length === 0) {
+      this.dishesContainer.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-muted);">
+          <i class="fa-solid fa-utensils" style="font-size: 3rem; color: var(--color-primary); margin-bottom: 1rem;"></i>
+          <h3>No se encontraron platos en esta categoría</h3>
+          <p>Intenta con otro término de búsqueda o selecciona otra categoría.</p>
+        </div>
+      `;
+      return;
+    }
 
-    dishes.forEach(plato => {
+    const isAdmin = this.userRole === 'admin';
+
+    dishes.forEach(dish => {
       const card = document.createElement('div');
-      card.style.border = '1px solid #ddd';
-      card.style.borderRadius = '8px';
-      card.style.overflow = 'hidden';
-      card.style.backgroundColor = 'white';
-      card.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+      card.className = 'dish-card';
 
-      const img = document.createElement('img');
-      img.src = plato.image;
-      img.alt = plato.name;
-      img.style.width = '100%';
-      img.style.height = '150px';
-      img.style.objectFit = 'cover';
-      card.appendChild(img);
+      // Si el usuario es ADMIN, el botón de compra está deshabilitado u oculto
+      const actionButtonHTML = isAdmin 
+        ? `<button class="btn-outline view-detail-btn" type="button" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;"><i class="fa-solid fa-eye"></i> Ver Detalles</button>`
+        : `<button class="add-cart-btn" type="button"><i class="fa-solid fa-cart-plus"></i> Agregar</button>`;
 
-      const nombre = document.createElement('h3');
-      nombre.textContent = plato.name;
-      nombre.style.margin = '10px';
-      nombre.style.fontSize = '18px';
-      card.appendChild(nombre);
+      card.innerHTML = `
+        <div class="dish-image-wrapper">
+          <img src="${dish.image}" alt="${dish.name}" class="dish-image" loading="lazy">
+          <div class="prep-time-badge">
+            <i class="fa-solid fa-clock"></i> ${dish.prepTime || '15-20 min'}
+          </div>
+        </div>
+        <div class="dish-content">
+          <h3 class="dish-title">${dish.name}</h3>
+          <p class="dish-desc">${dish.description}</p>
+          <div class="dish-footer">
+            <span class="dish-price">RD$ ${dish.price.toLocaleString('es-DO')}</span>
+            ${actionButtonHTML}
+          </div>
+        </div>
+      `;
 
-      const desc = document.createElement('p');
-      desc.textContent = plato.description;
-      desc.style.margin = '0 10px 10px';
-      desc.style.fontSize = '14px';
-      desc.style.color = '#666';
-      card.appendChild(desc);
+      // Evento de clic en la tarjeta para ver detalles
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.add-cart-btn')) {
+          e.stopPropagation();
+          onAddToCart(dish);
+        } else {
+          onViewDetails(dish);
+        }
+      });
 
-      const precio = document.createElement('p');
-      precio.textContent = `$${plato.price.toFixed(2)}`;
-      precio.style.margin = '0 10px 10px';
-      precio.style.fontWeight = 'bold';
-      precio.style.fontSize = '16px';
-      precio.style.color = '#d35400';
-      card.appendChild(precio);
-
-      const btnAgregar = document.createElement('button');
-      btnAgregar.textContent = 'Agregar al Carrito';
-      btnAgregar.style.margin = '0 10px 10px';
-      btnAgregar.style.padding = '8px 12px';
-      btnAgregar.style.backgroundColor = '#ff6b35';
-      btnAgregar.style.color = 'white';
-      btnAgregar.style.border = 'none';
-      btnAgregar.style.borderRadius = '4px';
-      btnAgregar.style.cursor = 'pointer';
-      btnAgregar.addEventListener('click', () => onAddToCart(plato));
-      card.appendChild(btnAgregar);
-
-      grid.appendChild(card);
+      this.dishesContainer.appendChild(card);
     });
-
-    this.dishesContainer.appendChild(grid);
-  }
-
-  renderIngredientList(ingredients) {
-    const lista = document.createElement('ul');
-    lista.style.paddingLeft = '20px';
-
-    ingredients.forEach(ingrediente => {
-      const item = document.createElement('li');
-      item.textContent = ingrediente;
-      lista.appendChild(item);
-    });
-
-    return lista;
   }
 
   renderDishDetailModal(dish) {
-    const modal = document.createElement('div');
-    modal.style.position = 'fixed';
-    modal.style.top = '0';
-    modal.style.left = '0';
-    modal.style.width = '100%';
-    modal.style.height = '100%';
-    modal.style.backgroundColor = 'rgba(0,0,0,0.7)';
-    modal.style.display = 'flex';
-    modal.style.justifyContent = 'center';
-    modal.style.alignItems = 'center';
-    modal.style.zIndex = '1000';
+    if (!this.dishModalContent || !this.dishModal) return;
 
-    const contenido = document.createElement('div');
-    contenido.style.backgroundColor = 'white';
-    contenido.style.padding = '20px';
-    contenido.style.borderRadius = '8px';
-    contenido.style.maxWidth = '500px';
-    contenido.style.width = '90%';
+    this.dishModalContent.innerHTML = `
+      <div style="text-align: center;">
+        <img src="${dish.image}" alt="${dish.name}" style="width: 100%; max-height: 240px; object-fit: cover; border-radius: var(--border-radius-md); margin-bottom: 1.25rem;">
+        <h2 style="color: var(--color-primary); font-size: 1.8rem; margin-bottom: 0.5rem;">${dish.name}</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.25rem; font-size: 1rem;">${dish.description}</p>
+        
+        <div style="display: flex; justify-content: space-around; background: var(--bg-primary); padding: 1rem; border-radius: var(--border-radius-sm); margin-bottom: 1.5rem; border: var(--border-glass);">
+          <div>
+            <span style="color: var(--text-muted); font-size: 0.85rem;">Tiempo Cocina</span>
+            <p style="font-weight: 700; color: var(--color-primary);"><i class="fa-solid fa-stopwatch"></i> ${dish.prepTime || '15-20 min'}</p>
+          </div>
+          <div>
+            <span style="color: var(--text-muted); font-size: 0.85rem;">Categoría</span>
+            <p style="font-weight: 700; color: var(--text-main);">${dish.category}</p>
+          </div>
+          <div>
+            <span style="color: var(--text-muted); font-size: 0.85rem;">Precio Unitario</span>
+            <p style="font-weight: 700; color: var(--color-secondary);">RD$ ${dish.price.toLocaleString('es-DO')}</p>
+          </div>
+        </div>
+      </div>
+    `;
 
-    const titulo = document.createElement('h2');
-    titulo.textContent = dish.name;
-    contenido.appendChild(titulo);
+    this.dishModal.classList.add('active');
+  }
 
-    const subtitulo = document.createElement('h4');
-    subtitulo.textContent = 'Ingredientes:';
-    contenido.appendChild(subtitulo);
-    contenido.appendChild(this.renderIngredientList(dish.ingredients));
-
-    if (dish.videoUrl) {
-      const subtituloVideo = document.createElement('h4');
-      subtituloVideo.textContent = 'Preparación:';
-      contenido.appendChild(subtituloVideo);
-
-      const video = document.createElement('video');
-      video.src = dish.videoUrl;
-      video.controls = true;
-      video.style.width = '100%';
-      video.style.marginTop = '10px';
-      contenido.appendChild(video);
+  closeDishModal() {
+    if (this.dishModal) {
+      this.dishModal.classList.remove('active');
     }
-
-    const btnCerrar = document.createElement('button');
-    btnCerrar.textContent = 'Cerrar';
-    btnCerrar.style.marginTop = '15px';
-    btnCerrar.style.padding = '8px 16px';
-    btnCerrar.style.backgroundColor = '#ccc';
-    btnCerrar.style.border = 'none';
-    btnCerrar.style.borderRadius = '4px';
-    btnCerrar.style.cursor = 'pointer';
-    btnCerrar.addEventListener('click', () => modal.remove());
-    contenido.appendChild(btnCerrar);
-
-    modal.appendChild(contenido);
-    document.body.appendChild(modal);
   }
 }

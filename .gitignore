@@ -1,19 +1,4 @@
-# Node dependencies
 node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Environment and secrets
-.env
-.env.local
-
-# Operating System files
+*.log
+public_url.txt
 .DS_Store
-Thumbs.db
-
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo

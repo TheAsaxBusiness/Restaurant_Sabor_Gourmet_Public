@@ -1,5 +1,231 @@
 {
-  "dishes": [],
-  "schedule": [],
-  "combos": []
+  "dishes": [
+    {
+      "id": "p-1",
+      "name": "Mofongo de Mariscos Gourmet",
+      "category": "Platos Fuertes",
+      "price": 850,
+      "prepTime": "20-25 min",
+      "description": "Mofongo de plátano verde sazonado con ajo y chicharrón crujiente, bañado en salsa cremosa de mariscos y camarones salteados.",
+      "ingredients": [
+        "Plátano verde",
+        "Ajo",
+        "Chicharrón de cerdo",
+        "Camarones",
+        "Calamares",
+        "Mantequilla de ajo",
+        "Crema de leche"
+      ],
+      "allergens": [
+        "Mariscos",
+        "Lácteos"
+      ],
+      "image": "assets/imagene/MOFONGO 1.jpg",
+      "videoUrl": "assets/Video/VIDEO.mp4"
+    },
+    {
+      "id": "p-2",
+      "name": "Mofongo Tradicional Criollo",
+      "category": "Platos Fuertes",
+      "price": 750,
+      "prepTime": "15-20 min",
+      "description": "Mofongo dominicano artesanal majado en pilón con chicharrón crujiente de cerdo y caldo de carne ahumada.",
+      "ingredients": [
+        "Plátano verde",
+        "Ajo silvestre",
+        "Chicharrón de cerdo",
+        "Mantequilla",
+        "Caldo de res ahumado"
+      ],
+      "allergens": [
+        "Ninguno"
+      ],
+      "image": "assets/imagene/MOFONGO 2.jpg",
+      "videoUrl": "assets/Video/VIDEO.mp4"
+    },
+    {
+      "id": "p-3",
+      "name": "Ensalada Tropical de la Casa",
+      "category": "Entradas",
+      "price": 320,
+      "prepTime": "10-12 min",
+      "description": "Mezcla de lechugas hidropónicas, finas lajas de mango maduro, piña a la parrilla, cebolla morada y vinagreta de maracuyá.",
+      "ingredients": [
+        "Lechuga variada",
+        "Piña frita",
+        "Mango maduro",
+        "Cebolla morada",
+        "Aderezo de maracuyá"
+      ],
+      "allergens": [
+        "Sin gluten",
+        "Vegano"
+      ],
+      "image": "assets/imagene/ENSALADA 1.jpg"
+    },
+    {
+      "id": "p-4",
+      "name": "Ensalada Fresca del Huerto",
+      "category": "Entradas",
+      "price": 280,
+      "prepTime": "8-10 min",
+      "description": "Vegetales frescos seleccionados, tomates cherry, pepino, cebolla fina y aderezo cítrico de la casa.",
+      "ingredients": [
+        "Lechuga romana",
+        "Tomate cherry",
+        "Pepino",
+        "Cebolla",
+        "Vinagreta de limón y oliva"
+      ],
+      "allergens": [
+        "Vegano"
+      ],
+      "image": "assets/imagene/ENSALADA 2.jpg"
+    },
+    {
+      "id": "p-5",
+      "name": "Pescado Frito con Tostones Crocantes",
+      "category": "Platos Fuertes",
+      "price": 780,
+      "prepTime": "18-22 min",
+      "description": "Chillo entero fresco marinado al limón, frito a la perfección con tostones crujientes y ensalada verde.",
+      "ingredients": [
+        "Pescado Chillo",
+        "Sal marina",
+        "Limón criollo",
+        "Plátano verde",
+        "Aceite vegetal"
+      ],
+      "allergens": [
+        "Pescado"
+      ],
+      "image": "assets/imagene/PESCADO.jpg"
+    },
+    {
+      "id": "p-6",
+      "name": "Sopa de Mariscos Bahía Gourmet",
+      "category": "Entradas",
+      "price": 420,
+      "prepTime": "15-18 min",
+      "description": "Sublime bisqué caliente con camarones, calamares frescos, trozos de pescado y cilantro silvestre.",
+      "ingredients": [
+        "Camarones",
+        "Calamares",
+        "Pescado",
+        "Fondo de pescado y mariscos",
+        "Vegetales al vapor"
+      ],
+      "allergens": [
+        "Mariscos",
+        "Pescado"
+      ],
+      "image": "assets/imagene/SOPA.jpg"
+    },
+    {
+      "id": "p-7",
+      "name": "Chicharrón de Pollo Doradito",
+      "category": "Platos Fuertes",
+      "price": 680,
+      "prepTime": "15-20 min",
+      "description": "Troceado de pollo crocante sazonado con especias secretas, acompañado de tostones recién hechos y guacamole casero.",
+      "ingredients": [
+        "Pollo fresco",
+        "Harina sazonada",
+        "Especias dominicanas",
+        "Plátano verde",
+        "Guacamole"
+      ],
+      "allergens": [
+        "Gluten"
+      ],
+      "image": "assets/imagene/POLLO FRITO.jpg"
+    },
+    {
+      "id": "p-8",
+      "name": "Tostones con Queso Frito Artesanal",
+      "category": "Entradas",
+      "price": 250,
+      "prepTime": "10-12 min",
+      "description": "Tostones crujientes dorados al punto, acompañados de lonjas de queso de hoja frito fundido.",
+      "ingredients": [
+        "Plátano verde",
+        "Queso de hoja frito",
+        "Mantequilla",
+        "Sal fina"
+      ],
+      "allergens": [
+        "Lácteos"
+      ],
+      "image": "assets/imagene/TOSTONES CON QUESO FRITO.jpg"
+    },
+    {
+      "id": "dish-2007",
+      "name": "Corte Churrasco Premium",
+      "category": "Platos Fuertes",
+      "price": 1250,
+      "prepTime": "15-20 min",
+      "description": "Churrasco angus a la parrilla con chimichurri gourmet.",
+      "image": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80"
+    }
+  ],
+  "schedule": [
+    {
+      "day": "Lunes - Jueves",
+      "hours": "11:30 AM - 10:00 PM",
+      "status": "Abierto"
+    },
+    {
+      "day": "Viernes - Sábado",
+      "hours": "11:30 AM - 11:30 PM",
+      "status": "Abierto"
+    },
+    {
+      "day": "Domingos",
+      "hours": "12:00 PM - 9:30 PM",
+      "status": "Abierto"
+    }
+  ],
+  "combos": [
+    {
+      "name": "Combo Familiar Sabor Gourmet",
+      "description": "2 Mofongos + 1 Chicharrón de Pollo + 4 Bebidas",
+      "price": 1950,
+      "savings": "Ahorras RD$ 380"
+    },
+    {
+      "name": "Combo Pareja Mar y Tierra",
+      "description": "1 Mofongo Mariscos + 1 Pescado Frito + 2 Bebidas + Postre",
+      "price": 1650,
+      "savings": "Ahorras RD$ 250"
+    },
+    {
+      "name": "Combo Ejecutivo Gourmet",
+      "description": "1 Entrada a elección + 1 Plato Fuerte + 1 Bebida",
+      "price": 890,
+      "savings": "Ahorras RD$ 180"
+    }
+  ],
+  "nutrition": [
+    {
+      "dish": "Mofongo de Mariscos Gourmet",
+      "calories": "680 kcal",
+      "protein": "42g",
+      "carbs": "55g",
+      "fat": "28g"
+    },
+    {
+      "dish": "Ensalada Tropical de la Casa",
+      "calories": "220 kcal",
+      "protein": "5g",
+      "carbs": "32g",
+      "fat": "8g"
+    },
+    {
+      "dish": "Pescado Frito con Tostones",
+      "calories": "590 kcal",
+      "protein": "48g",
+      "carbs": "40g",
+      "fat": "22g"
+    }
+  ]
 }

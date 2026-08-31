@@ -1,0 +1,14 @@
+{
+  "tables": [
+    { "id": "t-1", "number": 1, "capacity": 2, "zone": "Salón Principal", "status": "Disponible" },
+    { "id": "t-2", "number": 2, "capacity": 4, "zone": "Salón Principal", "status": "Disponible" },
+    { "id": "t-3", "number": 3, "capacity": 4, "zone": "Salón Principal", "status": "Ocupada" },
+    { "id": "t-4", "number": 4, "capacity": 6, "zone": "Salón Principal", "status": "Reservada" },
+    { "id": "t-5", "number": 5, "capacity": 2, "zone": "Terraza", "status": "Disponible" },
+    { "id": "t-6", "number": 6, "capacity": 4, "zone": "Terraza", "status": "Disponible" },
+    { "id": "t-7", "number": 7, "capacity": 8, "zone": "Terraza", "status": "Reservada" },
+    { "id": "t-8", "number": 8, "capacity": 4, "zone": "VIP", "status": "Disponible" },
+    { "id": "t-9", "number": 9, "capacity": 6, "zone": "VIP", "status": "Ocupada" },
+    { "id": "t-10", "number": 10, "capacity": 10, "zone": "VIP", "status": "Disponible" }
+  ]
+}
