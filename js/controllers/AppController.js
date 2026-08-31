@@ -1104,5 +1104,5 @@ export default class AppController {
       });
     }
   }
-  }
 }
+
