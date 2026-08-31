@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* ==========================================================================
    RESTAURANTE SABOR GOURMET - SISTEMA DE DISEÑO & STYLESHEET GLOBAL (CSS3)
    ========================================================================== */
@@ -969,4 +970,5 @@ body.light-theme .hero-overlay {
   .close-btn, #print-invoice-btn, .navbar, footer, .toast-container {
     display: none !important;
   }
+}
 }

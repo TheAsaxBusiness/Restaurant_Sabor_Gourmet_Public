@@ -1,6 +1,6 @@
 // ==========================================
 // TABLEVIEW.JS - VISTA DE TABLAS E INFORMACIÓN
-// Altagracia - Dev 3
+// Altagracia - Dev 2 / Equipo Sabor Gourmet
 // ==========================================
 
 export default class TableView {
@@ -12,9 +12,9 @@ export default class TableView {
   }
 
   init() {
-    this.scheduleContainer = document.getElementById('schedule-container');
-    this.combosContainer = document.getElementById('combos-container');
-    this.nutritionContainer = document.getElementById('nutrition-container');
+    this.scheduleContainer = document.getElementById('schedule-container') || document.getElementById('schedule-table');
+    this.combosContainer = document.getElementById('combos-container') || document.getElementById('combos-table');
+    this.nutritionContainer = document.getElementById('nutrition-container') || document.getElementById('nutrition-table');
     this.tablesStatusContainer = document.getElementById('tables-status-container');
   }
 
@@ -24,9 +24,9 @@ export default class TableView {
 
     const rows = scheduleData.map(item => `
       <tr>
-        <td><strong>${item.day}</strong></td>
-        <td>${item.hours}</td>
-        <td><span style="color: var(--status-available); font-weight: 600;"><i class="fa-solid fa-circle" style="font-size: 0.7rem; margin-right: 0.3rem;"></i> ${item.status}</span></td>
+        <td><strong>${item.day || item.dia || ''}</strong></td>
+        <td>${item.hours || item.horario || ''}</td>
+        <td><span style="color: var(--status-available); font-weight: 600;"><i class="fa-solid fa-circle" style="font-size: 0.7rem; margin-right: 0.3rem;"></i> ${item.status || 'Abierto'}</span></td>
       </tr>
     `).join('');
 
@@ -52,10 +52,10 @@ export default class TableView {
 
     const rows = combosData.map(item => `
       <tr>
-        <td><strong style="color: var(--color-primary);">${item.name}</strong></td>
-        <td>${item.description}</td>
-        <td><strong style="color: var(--color-secondary);">RD$ ${Number(item.price).toFixed(2)}</strong></td>
-        <td><span style="background: rgba(46, 204, 113, 0.15); color: var(--status-available); padding: 0.25rem 0.6rem; border-radius: 12px; font-weight: 600;"><i class="fa-solid fa-tag"></i> ${item.savings}</span></td>
+        <td><strong style="color: var(--color-primary);">${item.name || item.combo || ''}</strong></td>
+        <td>${item.description || item.includes || item.incluye || ''}</td>
+        <td><strong style="color: var(--color-secondary);">RD$ ${Number(item.price || item.precioOferta || item.offerPrice || 0).toFixed(2)}</strong></td>
+        <td><span style="background: rgba(46, 204, 113, 0.15); color: var(--status-available); padding: 0.25rem 0.6rem; border-radius: 12px; font-weight: 600;"><i class="fa-solid fa-tag"></i> ${item.savings || 'Ahorro Especial'}</span></td>
       </tr>
     `).join('');
 
@@ -82,11 +82,11 @@ export default class TableView {
 
     const rows = nutritionData.map(item => `
       <tr>
-        <td><strong>${item.dish}</strong></td>
-        <td>${item.calories}</td>
-        <td>${item.protein}</td>
-        <td>${item.carbs}</td>
-        <td>${item.fat}</td>
+        <td><strong>${item.dish || item.dishName || item.name || item.plato || ''}</strong></td>
+        <td>${item.calories || item.calorias || ''}</td>
+        <td>${item.protein || item.proteinas || ''}</td>
+        <td>${item.carbs || item.carbohidratos || ''}</td>
+        <td>${item.fat || item.grasas || ''}</td>
       </tr>
     `).join('');
 
@@ -134,3 +134,5 @@ export default class TableView {
     `;
   }
 }
+
+export { TableView };
