@@ -126,33 +126,41 @@ export default class AppController {
 
     if (formLogin) {
       formLogin.addEventListener('submit', async (e) => {
-        e.preventDefault();
+        if (e) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
         clearErrors();
 
         const email = emailInput ? emailInput.value : '';
         const pass = passInput ? passInput.value : '';
 
-        const res = await this.authModel.login(email, pass);
-        if (res.success) {
-          if (emailInput) emailInput.value = '';
-          if (passInput) passInput.value = '';
-          this.cartView.showToast(res.message || `Bienvenido de nuevo, ${res.user.name}`, 'success');
-          this.updateAuthUI(true);
-        } else {
-          // Mostrar banner de error visual explícito
-          if (errorBanner && errorText) {
-            errorText.textContent = res.message;
-            errorBanner.style.display = 'block';
+        try {
+          const res = await this.authModel.login(email, pass);
+          if (res.success) {
+            if (emailInput) emailInput.value = '';
+            if (passInput) passInput.value = '';
+            this.cartView.showToast(res.message || `Bienvenido de nuevo, ${res.user.name}`, 'success');
+            this.updateAuthUI(true);
+          } else {
+            if (errorBanner && errorText) {
+              errorText.textContent = res.message;
+              errorBanner.style.display = 'block';
+            }
+            if (res.message && res.message.includes('correo') && emailInput) {
+              emailInput.style.borderColor = '#e74c3c';
+              emailInput.focus();
+            } else if (res.message && res.message.includes('contraseña') && passInput) {
+              passInput.style.borderColor = '#e74c3c';
+              passInput.focus();
+            }
+            this.cartView.showToast(res.message || 'Error al iniciar sesión.', 'error');
           }
-          if (res.message.includes('correo') && emailInput) {
-            emailInput.style.borderColor = '#e74c3c';
-            emailInput.focus();
-          } else if (res.message.includes('contraseña') && passInput) {
-            passInput.style.borderColor = '#e74c3c';
-            passInput.focus();
-          }
-          this.cartView.showToast(res.message || 'Error al iniciar sesión.', 'error');
+        } catch (err) {
+          console.error('Error al procesar sesión:', err);
+          this.cartView.showToast('Error inesperado al iniciar sesión.', 'error');
         }
+        return false;
       });
     }
 
@@ -558,11 +566,16 @@ export default class AppController {
 
       const viewAdmin = document.getElementById('view-admin');
       if (viewAdmin) {
-        document.getElementById('dashboard-metrics-container').innerHTML = '';
-        document.getElementById('crm-customers-container').innerHTML = '';
-        document.getElementById('admin-orders-container').innerHTML = '';
-        document.getElementById('admin-menu-crud-container').innerHTML = '';
-        document.getElementById('admin-tables-crud-container').innerHTML = '';
+        const el1 = document.getElementById('dashboard-metrics-container');
+        const el2 = document.getElementById('crm-customers-container');
+        const el3 = document.getElementById('admin-orders-container');
+        const el4 = document.getElementById('admin-menu-crud-container');
+        const el5 = document.getElementById('admin-tables-crud-container');
+        if (el1) el1.innerHTML = '';
+        if (el2) el2.innerHTML = '';
+        if (el3) el3.innerHTML = '';
+        if (el4) el4.innerHTML = '';
+        if (el5) el5.innerHTML = '';
       }
 
       if (isFreshLogin || this.currentViewId === 'view-login' || this.currentViewId === 'view-admin') {
