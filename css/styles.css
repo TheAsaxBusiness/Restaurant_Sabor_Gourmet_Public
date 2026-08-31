@@ -1,1 +1,142 @@
-/* Estilos CSS del Proyecto - Altagracia */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap')
+p{
+    display: flex;
+
+}
+table {
+    width: 90%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background: white;
+}
+
+th {
+    background: #ff6b35;
+    color: white;
+    padding: 12px;
+}
+
+td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+tr:hover {
+    background-color: #f5f5f5;
+}
+
+h2 {
+    text-align: center;
+    margin-top: 40px;
+}
+:root {
+    --color-primary: #ff6b35;
+    --color-secondary: #2f4858;
+    --color-background: #f8f8f8;
+    --color-white: #ffffff;
+    --color-text: #333333;
+    --color-border: #dddddd;
+    --color-hover: #fff1eb;
+
+    --font-title: "Playfair Display", serif;
+    --font-main: "Outfit", sans-serif;
+
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
+    --radius: 12px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-main);
+    background: var(--color-background);
+    color: var(--color-text);
+}
+
+h1,
+h2,
+h3 {
+    font-family: var(--font-title);
+}
+
+h2 {
+    text-align: center;
+    margin: 40px 0 20px;
+    color: var(--color-secondary);
+}
+
+/* Contenedores de las tablas */
+#schedule-table,
+#combos-table,
+#nutrition-table {
+    width: 95%;
+    max-width: 1100px;
+    margin: 20px auto 40px;
+    overflow-x: auto;
+    background: var(--color-white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+/* Tablas */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--color-white);
+}
+
+th {
+    background: var(--color-primary);
+    color: var(--color-white);
+    padding: 14px;
+    text-align: center;
+    font-weight: bold;
+}
+
+td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid var(--color-border);
+}
+
+tbody tr:hover {
+    background-color: var(--color-hover);
+    transition: 0.2s ease;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #schedule-table,
+    #combos-table,
+    #nutrition-table {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    table {
+        min-width: 600px;
+    }
+
+    th,
+    td {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    th,
+    td {
+        padding: 8px;
+        font-size: 13px;
+    }
+}
