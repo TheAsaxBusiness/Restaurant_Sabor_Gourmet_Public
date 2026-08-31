@@ -1,143 +1,132 @@
-# 🍽️ Restaurante Sabor Gourmet - Aplicación Web Interactiva
+# 🍽️ Restaurante Sabor Gourmet - Plataforma Gastronómica Web (MVC SPA)
 
-[![Stack](https://img.shields.io/badge/Stack-HTML5%20%7C%20CSS3%20%7C%20ES6%2B%20%7C%20Express-d4af37)](https://github.com/TheAsaxBusiness/Restaurant_Sabor_Gourmet_Public)
-[![Arquitectura](https://img.shields.io/badge/Arquitectura-POO%20%2F%20UML%20%2F%20MVC-2a9d8f)](#-4-especificación-de-clases-y-contratos-uml)
-
-Esqueleto base y marco de trabajo para el desarrollo del sitio web/aplicación interactiva de la **Restaurante Sabor Gourmet**. El proyecto implementa una arquitectura orientada a objetos (POO) limpia con Vanilla HTML5, CSS3, JavaScript (ES6+), y un servidor ultraligero Node.js con Express para consumir una API JSON local sin base de datos externa.
+Sistema Web de Alta Cocina Dominicana desarrollado con arquitectura **Model-View-Controller (MVC)** en Javascript ES6+, backend REST en **Express.js**, navegación por pestañas **Single Page Application (SPA)**, control de acceso por roles (**RBAC**), gestión dinámica **CRUD de Menú y Mesas**, previsualización de **Facturas PDF con ITBIS (18%)**, **Dashboard KPI con Gráficos Interactivos** y **Modo Oscuro / Claro Gourmet**.
 
 ---
 
-## 📋 1. Resumen Ejecutivo del Proyecto
+## 👥 Equipo de Desarrollo - Grupo 7
 
-Este repositorio establece la estructura técnica, contratos de clases UML, distribución de tareas y roadmap para completar la aplicación web en un plazo de **4 días** trabajando con **4 integrantes**.
-
-El sistema ofrece:
-- **Hero Interactivo**: Video promocional en bucle (`<video controls autoplay muted loop>`).
-- **Catálogo Dinámico de Menú**: Categorías, búsqueda en tiempo real, badges y modales de detalles con listas desordenadas de ingredientes (`<ul>/<li>`).
-- **Tablas Semánticas**: Horarios de atención, combos promocionales y tabla nutricional.
-- **Formulario de Reservas**: Validación interactiva para solicitud de mesas.
-- **Carrito de Compras**: Cálculo automático de totales con **18% ITBIS/IVA**, persistencia en `LocalStorage` y notificaciones toast.
+- **Franyel** - *Dev 1 / Modelos de Datos, Autenticación `users.json` & Pedidos API*
+- **Carlos** - *Dev 3 / Dashboard KPI, Gráficos Chart.js & CRM Clientes*
+- **Altagracia** - *Dev 2 / Módulo de Reservas, Mesas & Tablas Semánticas*
+- **Enmanuel** - *Dev 4 / Controlador Principal `AppController.js`, Vistas SPA, Facturación PDF & Estilos CSS3*
 
 ---
 
-## 👥 2. Asignación del Equipo y Roles
+## 🔑 Credenciales de Prueba
 
-| Integrante | Rol Técnico | Componentes y Archivos Clave |
-| :--- | :--- | :--- |
-| **Franyel** | **Dev 1: Tech Lead & Backend Datos** | `data/menu.json`, `js/models/MenuModel.js`, `js/models/CartModel.js` |
-| **Carlos** | **Dev 2: Frontend & Multimedia** | `js/views/MenuView.js`, `assets/images/`, `assets/video/` |
-| **Altagracia** | **Dev 3: UI System & Tablas** | `css/styles.css`, `js/views/TableView.js` |
-| **Enmanuel** | **Dev 4: Carrito, Modales & Reservas** | `js/views/CartView.js`, Formulario Reservas, `js/app.js` |
+Para ingresar al sistema, utiliza cualquiera de los siguientes correos registrados en la base de datos `data/users.json`:
+
+| Perfil | Correo Electrónico | Contraseña | Rol Detectado | Permisos y Accesos |
+| :--- | :--- | :--- | :--- | :--- |
+| **Cliente** | `carlos@cliente.com` | `123456` | `customer` | Navegación pública, menú gastronómico, carrito de compra, reservas de mesas y emisión de **Factura PDF**. |
+| **Administrador** | `admin@sabor.com` | `admin123` | `admin` | **Monitor de Cocina**, **CRUD de Platos**, **CRUD de Mesas**, **KPIs de Ventas** y **CRM**. *(Sin carrito de compra)*. |
 
 ---
 
-## 🏗️ 3. Arquitectura del Proyecto y Estructura de Directorios
+## 🚀 Características y Funcionalidades
+
+### 🔐 1. Autenticación Silenciosa & Control de Acceso por Roles (RBAC)
+- **Cero Tokens Toy:** La aplicación analiza silenciosamente el correo ingresado en el formulario contra `data/users.json` para determinar la identidad y el rol.
+- **Bloqueo Inicial Gated Auth:** Todas las vistas permanecen bloqueadas hasta que el usuario inicie sesión correctamente.
+- **Regla Estricta 1 (Admin no compra):** El perfil `admin` tiene el botón de Carrito oculto y los botones de compra desactivados/reemplazados por *"Ver Detalles"*.
+- **Regla Estricta 2 (Privacidad de datos):** El perfil `customer` tiene las métricas de ventas internas, CRM e indicadores de cocina **estrictamente ocultos y bloqueados**.
+
+---
+
+### 📋 2. Módulos CRUD Dinámicos para el Administrador
+- **Gestión Dinámica de Platos (`/api/menu`):** Agregar nuevos platos, editar precios/descripciones o eliminar platos del catálogo de forma persistente.
+- **Gestión Dinámica de Mesas (`/api/tables`):** Crear nuevas mesas en el salón (Salón Principal, Terraza, VIP), actualizar su estado en tiempo real (*Disponible*, *Ocupada*, *Reservada*) o eliminarlas del mapa.
+
+---
+
+### 🧾 3. Facturación Fiscal Formal & Exportación a PDF
+- **Previsualización de Factura:** Modal institucional con RNC (`130-98241-9`), NCF oficial DGII, desglose de raciones, Subtotal, **ITBIS (18%)** y Total.
+- **Exportación / Impresión en PDF:** Botón con reglas CSS `@media print` optimizadas para imprimir la factura limpia en blanco y negro institucional sin menús ni fondos oscuros.
+
+---
+
+### 📊 4. Dashboard KPIs & 3 Gráficos Interactivos (Chart.js)
+- **Línea con Degradado Dorado:** Tendencia de ingresos en RD$ por bloques de horarios del día.
+- **Rosca / Donut Chart:** Porcentaje de ventas desglosado por categoría gastronómica.
+- **Barras Horizontales:** Comparativa visual del tiempo promedio de preparación en cocina por plato.
+
+---
+
+### 🎨 5. Diseño Gourmet, Animaciones & Modo Oscuro / Claro
+- **Glassmorphism & Animaciones:** Header flotante translúcido, transiciones suaves `fadeInScale` y micro-animaciones en tarjetas.
+- **Tema Oscuro & Claro (Dark/Light Mode):** Alternador en la barra superior que conmuta entre el tema oscuro carbón y un tema claro marfil cálido, guardando la preferencia en `LocalStorage`.
+- **Iconografía FontAwesome 6:** Integración completa de íconos vectoriales sin emojis directos en el código.
+- **100% Responsivo (Mobile-First):** Menú hamburguesa desplegable y reajuste automático de tarjetas a 1 columna en smartphones.
+
+---
+
+## 🛠️ Estructura del Proyecto (Patrón MVC)
 
 ```text
 Restaurant_Sabor_Gourmet_Public/
-├── index.html              # Página principal (Hero, Categorías, Menú, Tablas, Reservas)
-├── server.js               # Servidor Express ultraligero que sirve archivos estáticos y API /api/menu
-├── package.json            # Configuración de dependencias (Express)
-├── .gitignore              # Exclusión de node_modules y temporales
-├── README.md               # Documentación completa del proyecto y UML
+├── assets/                  # Material multimedia y videos del Hero
 ├── css/
-│   └── styles.css          # Variables CSS, Responsive Layout, Modales y Tablas (Altagracia)
+│   └── styles.css           # Tokens de diseño, animaciones, CSS3 & @media print
 ├── data/
-│   └── menu.json           # API interna JSON: Platos, horarios, combos y nutrición (Franyel)
-├── assets/
-│   ├── images/             # Fotografías de alta resolución de los platos
-│   └── video/              # Video promocional de cocina del chef
-└── js/
-    ├── models/
-    │   ├── MenuModel.js    # Carga JSON, filtro por categoría y buscador (Franyel)
-    │   └── CartModel.js    # Carrito, ITBIS 18% y LocalStorage (Franyel)
-    ├── views/
-    │   ├── MenuView.js     # Render de tarjetas, ingredientes (ul/li) y video modal (Carlos)
-    │   ├── TableView.js    # Render de tablas (Horarios, Combos, Nutrición) (Altagracia)
-    │   └── CartView.js     # Render de modal de carrito, badge y toasts (Enmanuel)
-    └── app.js              # Controlador principal AppController e integración (Enmanuel)
+│   ├── menu.json            # Base de datos JSON de Platos y Nutrición
+│   ├── tables.json          # Base de datos JSON de Mesas del Salón
+│   ├── orders.json          # Registro de Pedidos en tiempo real
+│   ├── customers.json       # Datos del CRM de Clientes
+│   └── users.json           # Cuentas de usuarios y roles registrados
+├── docs/                    # Documentación formal (.docx)
+│   ├── Epicas_y_Historias_de_Usuario.docx
+│   ├── Arquitectura_Modelos_Clases_y_Servidor.docx
+│   └── Guia_de_Fases_y_Roadmap_de_Desarrollo.docx
+├── js/
+│   ├── app.js               # Script de entrada principal (Bootstrapper ES6)
+│   ├── controllers/
+│   │   └── AppController.js # Orquestador MVC Principal (SPA & RBAC)
+│   ├── models/
+│   │   ├── MenuModel.js     # Modelo de datos y operaciones CRUD del Menú
+│   │   ├── CartModel.js     # Modelo de Carrito de compras e ITBIS 18%
+│   │   ├── TableModel.js    # Modelo de Mesas y Reservas
+│   │   ├── DashboardModel.js# Modelo de métricas de negocio
+│   │   ├── AuthModel.js     # Modelo de Autenticación con users.json
+│   │   └── OrderModel.js    # Modelo de Pedidos en vivo
+│   └── views/
+│       ├── MenuView.js      # Renderizador del Catálogo de Platos
+│       ├── CartView.js      # Renderizador del Carrito Slidout Drawer
+│       ├── TableView.js     # Renderizador de Mesas y Reservas
+│       ├── DashboardView.js # Renderizador de KPIs, Gráficos y Módulos CRUD Admin
+│       ├── InvoiceView.js   # Modal Previsualizador de Factura PDF
+│       └── AuthModalView.js # Componentes auxiliares de autenticación
+├── index.html               # Estructura semántica HTML5 y contenedores SPA
+├── server.js                # Servidor Backend REST API en Express
+├── README.md                # Guía y documentación del proyecto
+└── package.json             # Dependencias del proyecto
 ```
 
 ---
 
-## 📐 4. Especificación de Clases y Contratos UML
+## 💻 Instrucciones para Ejecutar el Proyecto
 
-### Módulo de Datos (Franyel)
-#### **`MenuModel` (`js/models/MenuModel.js`)**
-- `loadMenu() : Promise<Array<Object>>` — Fetch a `/api/menu` (o `data/menu.json`).
-- `getAllItems() : Array<Object>` — Retorna todos los platos.
-- `getCategories() : Array<String>` — Categorías únicas sin duplicados.
-- `getItemsByCategory(category: String) : Array<Object>` — Platos por categoría.
-- `searchItems(query: String) : Array<Object>` — Búsqueda por término.
-- `getItemById(id: String) : Object` — Retorna plato por ID.
+### 1. Clonar el repositorio
+```bash
+git clone git@github-asax:TheAsaxBusiness/Restaurant_Sabor_Gourmet_Public.git
+cd Restaurant_Sabor_Gourmet_Public
+```
 
-#### **`CartModel` (`js/models/CartModel.js`)**
-- `addItem(product: Object) : Array<Object>` — Agrega o incrementa cantidad.
-- `removeItem(id: String) : Array<Object>` — Elimina plato del carrito.
-- `updateQuantity(id: String, quantity: Number) : Array<Object>` — Actualiza cantidad.
-- `getItems() : Array<Object>` — Ítems en el carrito.
-- `getTotalCount() : Number` — Suma total de unidades.
-- `getTotals() : Object` — Retorna `{ subtotal, tax, discount, total }` (ITBIS 18%).
-- `saveToLocalStorage()` / `loadFromLocalStorage()` — Persistencia.
+### 2. Instalar dependencias
+```bash
+npm install
+```
 
-### Módulo Frontend & Menú (Carlos)
-#### **`MenuView` (`js/views/MenuView.js`)**
-- `init() : void` — Captura referencias del DOM.
-- `renderCategories(categories: Array<String>, activeCategory: String, onSelectCategory: Function) : void` — Botones de filtro `<ul>/<li>`.
-- `renderDishes(dishes: Array<Object>, onAddToCart: Function, onViewDetails: Function) : void` — Tarjetas de platos (`<img>`, badges, precio).
-- `renderDishDetailModal(dish: Object) : void` — Modal con ingredientes (`<ul>`) y video (`<video>`).
+### 3. Iniciar el servidor backend Express
+```bash
+npm start
+```
 
-### Módulo UI System & Tablas (Altagracia)
-#### **`TableView` (`js/views/TableView.js`)**
-- `init() : void` — Captura contenedores de tablas.
-- `renderScheduleTable(scheduleData: Array<Object>) : void` — Tabla semántica `<table>` de horarios.
-- `renderCombosTable(combosData: Array<Object>) : void` — Tabla comparativa `<table>` de combos.
-- `renderNutritionTable(nutritionData: Array<Object>) : void` — Tabla nutricional.
-
-### Módulo Carrito, Modales & Controlador (Enmanuel)
-#### **`CartView` (`js/views/CartView.js`)**
-- `init() : void` — Eventos de apertura y cierre.
-- `renderCartModal(cartItems, totals, onUpdateQty, onRemove) : void` — Tabla interactiva `<table>` del pedido.
-- `updateCartBadge(totalCount: Number) : void` — Contador flotante del icono.
-- `showToast(message: String, type: String) : void` — Notificaciones toast.
-
-#### **`AppController` (`js/app.js`)**
-- `init() : Promise<void>` — Inicialización global y arranque.
-- `setupEventListeners() : void` — Eventos de búsqueda, reservas y checkout.
+### 4. Abrir en el navegador
+Visita **[http://localhost:3000](http://localhost:3000)** en cualquier navegador web.
 
 ---
 
-## 🗓️ 5. Hoja de Ruta y Cronograma (4 Días)
+## 📄 Licencia y Derechos
 
-| Día | Franyel (Backend) | Carlos (Frontend) | Altagracia (UI/Tablas) | Enmanuel (Cart/App) |
-| :--- | :--- | :--- | :--- | :--- |
-| **Día 1** | Estructurar `data/menu.json` y probar `MenuModel.js` | Armar HTML base (Header, Hero, Footer) | Definir variables y estilos base CSS | Diseñar HTML del modal del carrito |
-| **Día 2** | Desarrollar `CartModel.js` con LocalStorage | Implementar `MenuView.js` para tarjetas | Crear estilos y `TableView.js` (Horarios/Combos) | Conectar botones 'Agregar' con `CartModel` |
-| **Día 3** | Agregar filtros y buscador en `MenuModel.js` | Integrar sección `<video>` y fotos de platos | Hacer tablas responsive y pulir tipografía | Crear vista de tabla del carrito en `CartView.js` |
-| **Día 4** | Pruebas de integración de datos en `app.js` | Revisión visual de tarjetas y galería | Efectos hover, animaciones y glassmorphism | Formulario de reserva + notificación final |
-
----
-
-## 🚀 6. Instalación y Ejecución Local
-
-1. **Clonar el repositorio**:
-   ```bash
-   git clone https://github.com/TheAsaxBusiness/Restaurant_Sabor_Gourmet_Public.git
-   cd Restaurant_Sabor_Gourmet_Public
-   ```
-
-2. **Instalar dependencias de Express**:
-   ```bash
-   npm install
-   ```
-
-3. **Iniciar el servidor local**:
-   ```bash
-   npm start
-   ```
-
-4. **Abrir en el navegador**:
-   Navega a [http://localhost:3000](http://localhost:3000)
-
----
-*© 2026 Restaurante Sabor Gourmet. Creado con HTML5, CSS3, JavaScript ES6+ & Express.*
+© 2026 Restaurante Sabor Gourmet. Desarrollado por el **Grupo 7 (Franyel, Carlos, Altagracia, Enmanuel)** para la materia de Desarrollo de Aplicaciones Web.
