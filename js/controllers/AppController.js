@@ -894,7 +894,10 @@ export default class AppController {
     }
 
     const items = this.cartModel.getItems();
-    if (items.length === 0) return;
+    if (items.length === 0) {
+      this.cartView.showToast('Tu carrito está vacío. Agrega platos antes de continuar.', 'info');
+      return;
+    }
 
     const totals = this.cartModel.getTotals();
 
@@ -903,10 +906,13 @@ export default class AppController {
       this.cartModel.clear();
       this.updateCartUI();
       this.cartView.closeCart();
-      this.cartView.showToast('¡Pedido enviado a cocina! Puedes ver tu factura en "Mis Pedidos".', 'success');
+      this.cartView.showToast('¡Pedido enviado a cocina! Puedes consultar el estado y la factura en "Mis Pedidos".', 'success');
       
+      // Sincronizar inmediatamente los pedidos del cliente
+      await this.refreshAdminAndCustomerOrders();
       this.switchView('view-mis-pedidos');
-      this.refreshAdminAndCustomerOrders();
+    } else {
+      this.cartView.showToast(result.message || 'Error al procesar el pedido.', 'error');
     }
   }
 
@@ -932,6 +938,11 @@ export default class AppController {
       targetPage.classList.add('active');
       this.currentViewId = targetViewId;
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Sincronizar automáticamente la vista Mis Pedidos o Admin al cambiar de pestaña
+    if (targetViewId === 'view-mis-pedidos' || targetViewId === 'view-admin') {
+      this.refreshAdminAndCustomerOrders();
     }
 
     const navButtons = document.querySelectorAll('.nav-link-btn');

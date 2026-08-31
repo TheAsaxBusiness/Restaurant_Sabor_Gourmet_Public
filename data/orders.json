@@ -1,14 +1,63 @@
 {
   "orders": [
     {
+      "id": "PED-1003",
+      "customerName": "Carlos Mendoza",
+      "customerEmail": "carlos@cliente.com",
+      "items": [
+        {
+          "id": "p-3",
+          "name": "Ensalada Tropical de la Casa",
+          "price": 320,
+          "image": "assets/imagene/ENSALADA 1.jpg",
+          "quantity": 2
+        },
+        {
+          "id": "p-6",
+          "name": "Sopa de Mariscos Bahía Gourmet",
+          "price": 420,
+          "image": "assets/imagene/SOPA.jpg",
+          "quantity": 1
+        },
+        {
+          "id": "p-1",
+          "name": "Mofongo de Mariscos Gourmet",
+          "price": 850,
+          "image": "assets/imagene/MOFONGO 1.jpg",
+          "quantity": 3
+        }
+      ],
+      "totals": {
+        "subtotal": 3610,
+        "tax": 649.8,
+        "total": 4259.8,
+        "taxRatePercentage": 18
+      },
+      "status": "En Cocina",
+      "ncf": "B0100001003",
+      "createdAt": "31/8/26, 6:31 p. m."
+    },
+    {
       "id": "PED-1001",
       "customerName": "Carlos Mendoza",
       "customerEmail": "carlos@cliente.com",
       "items": [
-        { "name": "Mofongo de Mariscos Gourmet", "quantity": 1, "price": 850 },
-        { "name": "Ensalada Tropical de la Casa", "quantity": 1, "price": 320 }
+        {
+          "name": "Mofongo de Mariscos Gourmet",
+          "quantity": 1,
+          "price": 850
+        },
+        {
+          "name": "Ensalada Tropical de la Casa",
+          "quantity": 1,
+          "price": 320
+        }
       ],
-      "totals": { "subtotal": 1170, "tax": 210.6, "total": 1380.6 },
+      "totals": {
+        "subtotal": 1170,
+        "tax": 210.6,
+        "total": 1380.6
+      },
       "status": "En Cocina",
       "ncf": "B0100001042",
       "createdAt": "2026-08-30 16:30"
@@ -18,9 +67,17 @@
       "customerName": "Altagracia Guzmán",
       "customerEmail": "altagracia@cliente.com",
       "items": [
-        { "name": "Pescado Frito con Tostones Crocantes", "quantity": 2, "price": 780 }
+        {
+          "name": "Pescado Frito con Tostones Crocantes",
+          "quantity": 2,
+          "price": 780
+        }
       ],
-      "totals": { "subtotal": 1560, "tax": 280.8, "total": 1840.8 },
+      "totals": {
+        "subtotal": 1560,
+        "tax": 280.8,
+        "total": 1840.8
+      },
       "status": "Entregado",
       "ncf": "B0100001043",
       "createdAt": "2026-08-30 15:45"
